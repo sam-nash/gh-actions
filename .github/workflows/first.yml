@@ -10,6 +10,7 @@ jobs:
     steps:
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
+      - run: echo 'Hi ${{ env.super_duper_var }}' 
         env:
           mascot: Octocat
   linux_job:
