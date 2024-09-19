@@ -21,9 +21,9 @@ jobs:
         OIDC_TOKEN=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
         "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value)
         
-        # Print token and its parts
         echo "OIDC Token: $OIDC_TOKEN"
-        
-        # Split the token into header, payload, and signature parts
-        HEADER=$(echo "$OIDC_TOKEN" | cut -d "." -f1 | base64 --decode)
-        PAYLOAD=$(echo "$OIDC_TOKEN" | cut -d "." -f2 | base64 --
+
+        # Function to add padding if necessary for base64 decoding
+        pad_base64() {
+          local len=$((${#1} % 4))
+          if [ "$len" -eq 2 ];
