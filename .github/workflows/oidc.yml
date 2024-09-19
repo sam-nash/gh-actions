@@ -1,27 +1,29 @@
-name: Deploy to Google Cloud
+name: Inspect OIDC Token Claims
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  inspect-oidc:
     runs-on: ubuntu-latest
-
     permissions:
-      id-token: write  # This enables OIDC token generation
-      contents: read   # To read the repository contents
+      id-token: write  # Allows OIDC token generation
+      contents: read   # To access the repository contents
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Print OIDC Token Info
-        run: |
-          echo "Requesting OIDC Token"
-          echo "Token URL: $ACTIONS_ID_TOKEN_REQUEST_URL"
-          echo "Token Request: $ACTIONS_ID_TOKEN_REQUEST_TOKEN"
-          # Making a request to fetch the actual OIDC token
-          curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-          "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq .
+    - name: Get OIDC Token
+      id: oidc-token
+      run: |
+        # Request the OIDC token
+        OIDC_TOKEN=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+        "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value)
+        
+        # Print token and its parts
+        echo "OIDC Token: $OIDC_TOKEN"
+        
+        # Split the token into header, payload, and signature parts
+        HEADER=$(echo "$OIDC_TOKEN" | cut -d "." -f1 | base64 --decode)
+        PAYLOAD=$(echo "$OIDC_TOKEN" | cut -d "." -f2 | base64 --
