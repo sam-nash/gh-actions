@@ -26,4 +26,21 @@ jobs:
         # Function to add padding if necessary for base64 decoding
         pad_base64() {
           local len=$((${#1} % 4))
-          if [ "$len" -eq 2 ];
+          if [ "$len" -eq 2 ]; then
+            echo "$1"'=='
+          elif [ "$len" -eq 3 ]; then
+            echo "$1"'='
+          else
+            echo "$1"
+          fi
+        }
+
+        # Split the token into header, payload, and signature parts
+        HEADER=$(echo "$OIDC_TOKEN" | cut -d "." -f1 | pad_base64 | base64 --decode)
+        PAYLOAD=$(echo "$OIDC_TOKEN" | cut -d "." -f2 | pad_base64 | base64 --decode)
+        SIGNATURE=$(echo "$OIDC_TOKEN" | cut -d "." -f3)
+
+        # Print out the claims in the payload
+        echo "OIDC Header: $HEADER"
+        echo "OIDC Payload: $PAYLOAD"
+        echo "OIDC Signature: $SIGNATURE"
