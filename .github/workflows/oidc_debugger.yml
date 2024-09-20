@@ -15,7 +15,7 @@ jobs:
     name: oidc debugger
     steps:
       - name: Checkout actions-oidc-debugger
-        uses: checkout@v3
+        uses: actions/checkout@v3
         with:
           repository: github/actions-oidc-debugger
           ref: main
