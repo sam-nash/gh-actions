@@ -20,7 +20,8 @@ jobs:
         uses: actions/checkout@v4
 
         # Authenticate to Google Cloud
-      - name: Authenticate to Google Cloud
+      - id: authenticate
+        name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
@@ -31,6 +32,10 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      - name: set credentials file
+        run: >-
+          gcloud auth login --cred-file=${{steps.authenticate.outputs.credentials_file_path}}
 
         # Run an arbitrary gcloud command
       - name: List Google Cloud Projects
