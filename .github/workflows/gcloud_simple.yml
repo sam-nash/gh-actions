@@ -10,7 +10,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions: # The permissions that the GitHub Actions runner should have
+    permissions: # The permissions for the GitHub Actions runner
       contents: read
       id-token: write
 
