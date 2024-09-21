@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/gcp/gcloud_simple.yml'
+      - '.github/workflows/gcp/**'
 
 jobs:
   deploy:
