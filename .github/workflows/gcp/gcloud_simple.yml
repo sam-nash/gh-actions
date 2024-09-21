@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'gcp/**'
+      - '.github/workflows/gcp/**'
 
 jobs:
   deploy:
