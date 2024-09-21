@@ -1,8 +1,10 @@
 name: Debug OIDC
 
-# Trigger the workflow on push to main branch
+# Trigger the workflow on push to only this file on main branch
 on:
   push:
+    paths:
+      - .github/workflows/actions-oidc-debugger.yml
     branches:
       - main
 
