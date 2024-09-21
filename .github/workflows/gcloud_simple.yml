@@ -1,11 +1,11 @@
-name: Authenticate & Run Commands on Google Cloud
+name: Authenticate & Run GCloud CLI Commands
 
 on:
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/gcp/**'
+      - '.github/workflows/gcloud_simple.yml'
 
 jobs:
   deploy:

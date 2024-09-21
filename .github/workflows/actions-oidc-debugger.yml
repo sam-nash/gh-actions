@@ -4,7 +4,7 @@ name: Debug OIDC
 on:
   push:
     paths:
-      - '.github/workflows/oidc/**'
+      - '.github/workflows/actions-oidc-debugger.yml'
     branches:
       - main
 
