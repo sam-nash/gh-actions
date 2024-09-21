@@ -1,5 +1,8 @@
 name: Hi Mascot
-on: push
+
+on:
+  workflow_dispatch:
+
 env:
   mascot: Mona
   super_duper_var: totally_awesome

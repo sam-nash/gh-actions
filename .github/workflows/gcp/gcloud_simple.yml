@@ -14,7 +14,6 @@ jobs:
       contents: read
       id-token: write
 
-
     steps:
         # Checkout code
       - name: Checkout code

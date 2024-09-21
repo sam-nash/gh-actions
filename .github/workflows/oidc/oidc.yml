@@ -34,7 +34,7 @@ jobs:
         if [ "$remainder" -eq 2 ]; then
             base64_input_standard="${base64_input_standard}=="
         elif [ "$remainder" -eq 3 ]; then
-            base64_input_standard="${base64_input_standard}="
+            base64_input_standard="${base64_iønput_standard}="
         fi
 
         echo "$base64_input_standard" | base64 --decode 2>/dev/null
