@@ -10,7 +10,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions: # Grant permissions to the workflow
+    permissions: 
       contents: read
       id-token: write
 
