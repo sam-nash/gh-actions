@@ -21,7 +21,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-        # Authenticate to Google Cloud
+        # Authenticate to Google Cloud Platform
       - id: authenticate
         name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
