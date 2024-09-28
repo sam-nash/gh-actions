@@ -7,13 +7,12 @@ on:
     paths:
       - '.github/workflows/gcloud_simple.yml'
 
-permissions: 
-      contents: read
-      id-token: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
+  permissions: 
+      contents: read
+      id-token: write
 
     steps:
         # Checkout code
