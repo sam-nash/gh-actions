@@ -34,7 +34,7 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ vars.GCP_PROJECT_ID }}
+          project_id: ${{ vars.GCP_PROJECT_ID_VAL }}
 
       - name: set credentials file
         run: >-
