@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/gcloud_simple.yml'
+      - '.github/workflows/gcloud_auth.yml'
 
 jobs:
   deploy:
