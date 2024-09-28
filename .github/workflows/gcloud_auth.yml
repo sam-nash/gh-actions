@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/gcloud_simple.yml'
-      
+
 permissions: 
       contents: read
       id-token: write
@@ -19,6 +19,8 @@ jobs:
         # Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
         # Authenticate to Google Cloud
       - id: authenticate
