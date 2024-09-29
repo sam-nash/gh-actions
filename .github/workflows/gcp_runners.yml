@@ -13,8 +13,11 @@ on:
       - '.github/workflows/gcp_runners.yml'
 
 jobs:
-  build:
+  docker-build:
     runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      id-token: write 
 
     steps:
       - name: Checkout repository
