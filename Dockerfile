@@ -27,8 +27,11 @@ RUN curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.
 # Extract the installer
 RUN tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
 
-# execute the config.sh script
-RUN ./config.sh --url ${RUNNER_URL} --token ${RUNNER_TOKEN}
+# list the contents of the directory
+RUN ls -al
 
-# execute the run.sh script
-CMD ["./run.sh"]
+# # execute the config.sh script
+# RUN ./config.sh --url ${RUNNER_URL} --token ${RUNNER_TOKEN}
+
+# # execute the run.sh script
+# CMD ["./run.sh"]
