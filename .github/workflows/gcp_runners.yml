@@ -41,8 +41,9 @@ jobs:
         run: |
           gcloud auth configure-docker gcr.io
 
-      - name: Build Docker image
-        run: docker build -t gcr.io/${{ vars.GCP_PROJECT_ID_VAL }}/my-self-hosted-runner:latest .
-
-      - name: Push Docker image to Google Artifact Registry
-        run: docker push gcr.io/${{ vars.GCP_PROJECT_ID_VAL }}/my-self-hosted-runner:latest
+      - name: Run GitHub Actions Runner Container
+        run: |
+          docker run -d --name github-actions-runner \
+            -e RUNNER_URL=${{ vars.RUNNER_REPO_URL }} \
+            -e RUNNER_TOKEN=${{ secrets.RUNNER_TOKEN }} \
+            ghcr.io/actions/actions-runner:2.319.1
