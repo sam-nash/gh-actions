@@ -29,9 +29,8 @@ RUN echo "3f6efb7488a183e291fc2c62876e14c9ee732864173734facc85a1bfb1744464  acti
 # Extract the installer
 RUN tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
 
-# Copy the entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# execute the config.sh script
+RUN ./config.sh --url ${RUNNER_URL} --token ${RUNNER_TOKEN}
 
-# Set the entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
+# execute the run.sh script
+CMD ["./run.sh"]
