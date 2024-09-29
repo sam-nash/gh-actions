@@ -60,8 +60,3 @@ jobs:
       - name: Push Image to Google Artifact Registry
         run: |
           docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1
-
-      - name: Deploy to Google Cloud Run
-        run: |
-          gcloud run deploy github-actions-runner \
-            --image ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1 \
