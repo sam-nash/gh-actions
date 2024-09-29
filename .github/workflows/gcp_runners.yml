@@ -42,7 +42,7 @@ jobs:
           gcloud auth configure-docker gcr.io
 
       - name: Build Docker image
-        run: docker build -t gcr.io/${{ vars.GCP_PROJECT_ID }}/my-self-hosted-runner:latest .
+        run: docker build -t gcr.io/${{ vars.GCP_PROJECT_ID_VAL }}/my-self-hosted-runner:latest .
 
       - name: Push Docker image to Google Artifact Registry
-        run: docker push gcr.io/${{ vars.GCP_PROJECT_ID }}/my-self-hosted-runner:latest
+        run: docker push gcr.io/${{ vars.GCP_PROJECT_ID_VAL }}/my-self-hosted-runner:latest
