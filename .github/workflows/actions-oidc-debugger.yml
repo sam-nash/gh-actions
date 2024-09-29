@@ -1,6 +1,6 @@
 name: Debug OIDC
 
-# Trigger the workflow on push to only this file on the main branch
+# Trigger the workflow on push to the main branch only when this file iks modified
 on:
   push:
     paths:
