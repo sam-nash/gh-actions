@@ -1,4 +1,4 @@
-name: Auth & Run GCloud CLI Commands
+name: Auth & Run GCloud CLI 
 
 on:
   push:
