@@ -51,16 +51,16 @@ jobs:
 
       - name: Tag Image for Google Artifact Registry
         run: |
-          docker tag ghcr.io/actions/actions-runner:2.319.1 ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/my-repo/actions-runner:2.319.1
+          docker tag ghcr.io/actions/actions-runner:2.319.1 ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1
 
       - name: Push Image to Google Artifact Registry
         run: |
-          docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/my-repo/actions-runner:2.319.1
+          docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1
 
       - name: Deploy to Google Cloud Run
         run: |
           gcloud run deploy github-actions-runner \
-            --image ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/my-repo/actions-runner:2.319.1 \
+            --image ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1 \
             --platform managed \
             --region ${{ vars.GCP_REGION }} \
             --set-env-vars RUNNER_URL=${{ vars.RUNNER_REPO_URL }},RUNNER_TOKEN=${{ secrets.RUNNER_TOKEN }} \
