@@ -51,7 +51,7 @@ jobs:
 
       - name: Tag Image for Google Artifact Registry
         run: |
-          docker tag ghcr.io/actions/actions-runner:2.319.1 ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1
+          docker tag ghcr.io/actions/actions-runner:2.319.1 ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/gcr.io/actions-runner:2.319.1
 
       - name: Push Image to Google Artifact Registry
         run: |
