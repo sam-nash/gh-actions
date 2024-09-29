@@ -43,7 +43,9 @@ jobs:
 
       - name: Run GitHub Actions Runner Container
         run: |
-          docker run -d --name github-actions-runner \
-            -e RUNNER_URL=${{ vars.RUNNER_REPO_URL }} \
-            -e RUNNER_TOKEN=${{ secrets.RUNNER_TOKEN }} \
-            ghcr.io/actions/actions-runner:2.319.1
+          gcloud run deploy github-actions-runner \
+            --image ghcr.io/actions/actions-runner:2.319.1 \
+            --platform managed \
+            --region ${{ vars.GCP_REGION }} \
+            --set-env-vars RUNNER_URL=${{ vars.RUNNER_REPO_URL }},RUNNER_TOKEN=${{ secrets.RUNNER_TOKEN }} \
+            --allow-unauthenticated
