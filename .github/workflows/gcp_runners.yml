@@ -1,4 +1,4 @@
-name: Build Dockerfile and Push to Google Cloud Artifact Registry
+name: GH Actions Runner on Cloud Run
 
 on:
   push:
