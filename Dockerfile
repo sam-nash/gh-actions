@@ -23,8 +23,6 @@ WORKDIR /home/runner
 # Download the latest runner package
 RUN curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
 
-# Optional: Validate the hash
-RUN echo "3f6efb7488a183e291fc2c62876e14c9ee732864173734facc85a1bfb1744464  actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" | shasum -a 256 -c
 
 # Extract the installer
 RUN tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
