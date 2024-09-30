@@ -43,4 +43,5 @@ jobs:
             gcloud compute instances create-with-container github-actions-runner \
             --container-image ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1 \
             --machine-type e2-micro \
-            --tags gh-runner,self-hosted
+            --tags gh-runner,self-hosted \
+            --zone australia-southeast1-a
