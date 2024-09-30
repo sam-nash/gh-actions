@@ -46,4 +46,4 @@ jobs:
             --tags gh-runner,self-hosted \
             --metadata-from-file google-logging-enabled=true \
             --metadata-from-file google-monitoring-enabled=true \
-            --metadata-from-file google-oslogin-enabled=true \
+            --metadata-from-file google-oslogin-enabled=true
