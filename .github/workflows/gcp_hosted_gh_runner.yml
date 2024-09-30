@@ -37,7 +37,7 @@ jobs:
     #         --set-env-vars RUNNER_URL=${{ vars.RUNNER_REPO_URL }},RUNNER_TOKEN=${{ secrets.RUNNER_TOKEN }} \
     #         --allow-unauthenticated
 
-        # Deploy to Google Cloud Compute Engine
+        # Deploy to GCE
       - name: Deploy to Google Cloud Compute Engine
         run: |
             gcloud compute instances create-with-container github-actions-runner \
