@@ -3,7 +3,13 @@ name: Hi Mascot
 on:
   workflow_dispatch:
 
-env:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/first.yml'
+
+env: # env for all jobs
   mascot: Mona
   super_duper_var: totally_awesome
 
@@ -14,7 +20,7 @@ jobs:
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
       - run: echo 'Hi ${{ env.super_duper_var }}' 
-        env:
+        env: # env for this job
           mascot: Octocat
   linux_job:
     runs-on: ubuntu-latest
@@ -22,3 +28,8 @@ jobs:
       mascot: Tux
     steps:
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Tux
+
+  self_hosted_job:
+    runs-on: self-hosted
+    steps:
+      - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
