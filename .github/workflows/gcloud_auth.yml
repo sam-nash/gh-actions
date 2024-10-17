@@ -1,11 +1,7 @@
 name: Auth & Run GCloud CLI 
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/gcloud_auth.yml'
+  workflow_dispatch:
 
 jobs:
   deploy:
