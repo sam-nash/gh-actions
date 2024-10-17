@@ -27,4 +27,3 @@ jobs:
         uses: ./.github/actions/actions-oidc-debugger
         with:
           audience: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          # '${{ github.server_url }}/${{ github.repository_owner }}'
