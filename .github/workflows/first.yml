@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
+      - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
       - run: echo 'Hi ${{ env.super_duper_var }}' 
         env: # env for this job
           mascot: Octocat
