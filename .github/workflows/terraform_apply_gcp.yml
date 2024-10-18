@@ -28,19 +28,19 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
-        working-directory: terraform
+        working-directory: google-cloud/terraform
 
       - name: Terraform Validate
         id: validate
         run: terraform validate
-        working-directory: terraform-code
+        working-directory: google-cloud/terraform
 
       # - name: Terraform Plan
       #   id: plan
       #   run: terraform plan -out=tfplan
-      #   working-directory: terraform-code
+      #   working-directory: google-cloud/terraform
 
       # - name: Terraform Apply
       #   id: apply
       #   run: terraform apply -auto-approve tfplan
-      #   working-directory: terraform-code
+      #   working-directory: google-cloud/terraform
