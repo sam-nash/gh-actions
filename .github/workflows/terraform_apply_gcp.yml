@@ -1,6 +1,7 @@
 name: Terraform CI/CD
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types: [terraform_apply]
 
@@ -20,6 +21,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: terraform
 
+      - name: Verify Directory Structure
+        run: ls -al terraform/google_cloud/terraform
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -28,12 +32,12 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
-        working-directory: google-cloud/terraform
+        working-directory: terraform/google-cloud/terraform
 
       - name: Terraform Validate
         id: validate
         run: terraform validate
-        working-directory: google-cloud/terraform
+        working-directory: terraform/google-cloud/terraform
 
       # - name: Terraform Plan
       #   id: plan
