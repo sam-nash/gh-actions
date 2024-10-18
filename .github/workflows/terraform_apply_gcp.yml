@@ -19,10 +19,9 @@ jobs:
         with:
           repository: ${{ github.event.client_payload.repository }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: terraform
 
       - name: Verify Directory Structure
-        run: ls -alR terraform
+        run: ls -alR
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
@@ -32,12 +31,12 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
-        working-directory: terraform/google-cloud/terraform
+        working-directory: google_cloud/terraform
 
       - name: Terraform Validate
         id: validate
         run: terraform validate
-        working-directory: terraform/google-cloud/terraform
+        working-directory: google_cloud/terraform
 
       # - name: Terraform Plan
       #   id: plan
