@@ -22,7 +22,7 @@ jobs:
           path: terraform
 
       - name: Verify Directory Structure
-        run: ls -al terraform
+        run: ls -alR terraform
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
