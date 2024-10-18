@@ -31,12 +31,12 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
-        working-directory: google_cloud/terraform
+        working-directory: terraform
 
       - name: Terraform Validate
         id: validate
         run: terraform validate
-        working-directory: google_cloud/terraform
+        working-directory: terraform
 
       # - name: Terraform Plan
       #   id: plan
