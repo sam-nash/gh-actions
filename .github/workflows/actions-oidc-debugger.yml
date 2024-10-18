@@ -1,12 +1,7 @@
 name: Debug OIDC
 
-# Trigger the workflow on push to the main branch only when this file iks modified.
 on:
-  push:
-    paths:
-      - '.github/workflows/actions-oidc-debugger.yml'
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   oidc_debug_test:
