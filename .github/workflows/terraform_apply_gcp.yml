@@ -63,17 +63,18 @@ jobs:
         if: always()
         run: |
           terraform show -json
-          # LOCK_INFO=$(terraform state pull | jq -r '.lock' )
-          # if [ -n "$LOCK_INFO" ]; then
-          #   LOCK_ID=$(echo $LOCK_INFO | jq -r '.ID')
-          #   echo "Force unlocking lock ID $LOCK_ID"
-          # fi
         working-directory: terraform
 
-      # - name: Terraform Release Lock
-      #   id: lock
-      #   run: terraform force-unlock -force 1729334677453017
-      #   working-directory: terraform
+      - name: Cleanup
+        if: always()
+        run: |
+          LOCK_INFO=$(terraform show -json | jq -r '.lock | select(. != null)')
+          if [ -n "$LOCK_INFO" ]; then
+            LOCK_ID=$(echo $LOCK_INFO | jq -r '.ID')
+            echo "Force unlocking lock ID $LOCK_ID"
+            terraform force-unlock $LOCK_ID
+          fi
+        working-directory: terraform
 
       - name: Terraform Plan
         id: plan
