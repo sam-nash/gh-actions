@@ -62,7 +62,7 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          LOCK_INFO=$(terraform state pull | jq -r '.lock | select(. != null)')
+          LOCK_INFO=$(terraform state pull | jq -r '.lock' )
           if [ -n "$LOCK_INFO" ]; then
             LOCK_ID=$(echo $LOCK_INFO | jq -r '.ID')
             echo "Force unlocking lock ID $LOCK_ID"
