@@ -61,7 +61,7 @@ jobs:
 
       - name: Terraform Release Lock
         id: lock
-        run: terraform force-unlock -force "" # -force 1729334677453017
+        run: terraform force-unlock -force 1729334677453017
         working-directory: terraform
 
       - name: Terraform Plan
