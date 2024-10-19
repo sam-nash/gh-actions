@@ -59,14 +59,15 @@ jobs:
         run: terraform validate
         working-directory: terraform
 
-      - name: Cleanup
+      - name: show
         if: always()
         run: |
-          LOCK_INFO=$(terraform state pull | jq -r '.lock' )
-          if [ -n "$LOCK_INFO" ]; then
-            LOCK_ID=$(echo $LOCK_INFO | jq -r '.ID')
-            echo "Force unlocking lock ID $LOCK_ID"
-          fi
+          terraform show -json
+          # LOCK_INFO=$(terraform state pull | jq -r '.lock' )
+          # if [ -n "$LOCK_INFO" ]; then
+          #   LOCK_ID=$(echo $LOCK_INFO | jq -r '.ID')
+          #   echo "Force unlocking lock ID $LOCK_ID"
+          # fi
         working-directory: terraform
 
       # - name: Terraform Release Lock
