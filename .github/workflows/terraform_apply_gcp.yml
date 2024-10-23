@@ -59,11 +59,11 @@ jobs:
         run: terraform validate
         working-directory: terraform
 
-      - name: show
-        if: always()
+
+      # Run a gcloud command to test authentication
+      - name: List Google Cloud Projects
         run: |
-          terraform show -json
-        working-directory: terraform
+          gcloud projects list
 
       - name: Terraform Plan
         id: plan
