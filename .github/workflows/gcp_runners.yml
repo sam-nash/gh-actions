@@ -43,11 +43,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-            docker build -t ghcr.io/${{ github.repository }}/actions-runner:latest .
+          docker build -t actions-runner:latest .
 
       - name: Tag Image for Google Artifact Registry
         run: |
-          docker tag ghcr.io/${{ github.repository }}/actions-runner:latest gcr.io/${{ vars.GCP_PROJECT_ID }}/actions-runner:latest
+          docker tag actions-runner:latest australia-southeast1-docker.pkg.dev/gh-actions-1506/my-repo/actions-runner:latest
 
       - name: Push Image to Google Artifact Registry
         run: |
