@@ -1,4 +1,4 @@
-name: GH Actions Runner w Cloud Run
+name: GH Actions Runner with Cloud Run
 
 on:
   push:
