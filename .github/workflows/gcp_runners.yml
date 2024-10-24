@@ -43,7 +43,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t actions-runner:latest .
+          docker buildx build --platform linux/amd64 -t actions-runner:latest .
 
       - name: Tag Image for Google Artifact Registry
         run: |
