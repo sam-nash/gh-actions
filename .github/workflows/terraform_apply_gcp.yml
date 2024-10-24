@@ -83,6 +83,7 @@ jobs:
             --region ${{ vars.GCP_REGION }} \
             --no-allow-unauthenticated \
             --platform managed \
+            --port 8080 \
             --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}
 
       # Get Identity Token for Cloud Run invocation
