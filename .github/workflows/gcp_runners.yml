@@ -41,22 +41,14 @@ jobs:
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Authenticate Docker with GitHub Container Registry
+      - name: Build Docker Image
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Authenticate Docker with Google Artifact Registry
-        run: |
-          gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev
-
-      - name: Pull GitHub Actions Runner Image
-        run: |
-          docker pull ghcr.io/actions/actions-runner:2.319.1
+            docker build -t ghcr.io/${{ github.repository }}/actions-runner:latest .
 
       - name: Tag Image for Google Artifact Registry
         run: |
-          docker tag ghcr.io/actions/actions-runner:2.319.1 ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1
+          docker tag ghcr.io/${{ github.repository }}/actions-runner:latest gcr.io/${{ vars.GCP_PROJECT_ID }}/actions-runner:latest
 
       - name: Push Image to Google Artifact Registry
         run: |
-          docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:2.319.1
+          docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
