@@ -48,7 +48,6 @@ jobs:
         run: terraform init
         working-directory: terraform
 
-
       - name: Terraform Format
         id: fmt
         run: terraform fmt
@@ -58,7 +57,6 @@ jobs:
         id: validate
         run: terraform validate
         working-directory: terraform
-
 
       # Run a gcloud command to test authentication
       - name: List Google Cloud Projects
@@ -75,11 +73,11 @@ jobs:
       #   run: terraform apply -auto-approve tfplan
       #   working-directory: terraform
 
-  # Deploy the image from Artifact Registry to Cloud Run
+      # Deploy the image from Artifact Registry to Cloud Run
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy my-cloud-run-service \
-            --image "australia-southeast1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \ 
+            --image "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \
             --region ${{ vars.GCP_REGION }} \
             --no-allow-unauthenticated \
             --platform managed \
