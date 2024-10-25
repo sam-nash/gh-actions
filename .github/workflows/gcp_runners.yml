@@ -44,11 +44,13 @@ jobs:
       - name: Build Docker Image
         run: |
           docker buildx build --platform linux/amd64 -t actions-runner:latest .
+          echo "Checking the Docker images"
+          docker images
 
       - name: Tag Image for Google Artifact Registry
         run: |
           docker tag actions-runner:latest australia-southeast1-docker.pkg.dev/gh-actions-1506/my-repo/actions-runner:latest
-
+          
       - name: Push Image to Google Artifact Registry
         run: |
           docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
