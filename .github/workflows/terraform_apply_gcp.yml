@@ -79,7 +79,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy my-cloud-run-service \
-            --image "australia-southeast1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \ # LOCATION-docker.pkg.dev/PROJECT_ID/REPO_NAME/PATH:TAG 
+            --image "australia-southeast1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \ 
             --region ${{ vars.GCP_REGION }} \
             --no-allow-unauthenticated \
             --platform managed \
