@@ -47,6 +47,10 @@ jobs:
           echo "Checking the Docker images"
           docker images
 
+      - name: Tag Docker Image
+        run: |
+          docker tag actions-runner:latest ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
+          
       - name: Push Image to Google Artifact Registry
         run: |
           docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
