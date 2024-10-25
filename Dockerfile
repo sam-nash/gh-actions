@@ -20,8 +20,5 @@ RUN curl -o actions-runner-linux-x64-2.285.0.tar.gz -L https://github.com/action
 # Copy the entrypoint script
 COPY entrypoint.sh /home/runner/entrypoint.sh
 
-# Expose port 8080
-EXPOSE 8080
-
 # Run the entrypoint script
 CMD ["bash", "/home/runner/entrypoint.sh"]

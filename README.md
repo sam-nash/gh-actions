@@ -1,10 +1,12 @@
 # gh-actions
 
-## terraform workflows
-
-This section will demonstrate how to use GitHub Actions with Workload Identity Federation to Apply a terraform plan.
+## GH Action Workflows on Google Cloud
 
 This doco assumes that the workload identity federation has already been set up as per these [instructions](https://github.com/sam-nash/google_cloud/blob/master/docs/Workload_Identity_Federation.md).
+
+### terraform workflows
+
+This section will demonstrate how to use GitHub Actions with Workload Identity Federation to Apply a terraform plan.
 
 Step 1 : Retrieve the Workload Identity Provider URI of your GCP project
 
@@ -21,8 +23,22 @@ gcloud iam workload-identity-pools providers describe gh-provider \
 
 Step 2: Go to your GitHub repository settings, and add the following secrets in `settings/secrets/actions`:
 
-   - `GCP_PROJECT_ID`: Your Google Cloud project ID.
-   - `GCP_SERVICE_ACCOUNT`: The email of your Google Cloud service account.
-   - `GCP_WORKLOAD_IDENTITY_PROVIDER`: The URI of the WIF retrived in the prveious step.
-   
+- `GCP_PROJECT_ID`: Your Google Cloud project ID.
+- `GCP_SERVICE_ACCOUNT`: The email of your Google Cloud service account.
+- `GCP_WORKLOAD_IDENTITY_PROVIDER`: The URI of the WIF retrived in the prveious step.
+
 Refer to the [screenshot] (GH_Variables.png)
+
+### gcp docker runner
+
+Give the relevant permissiosn to the service account
+
+```sh
+gcloud projects add-iam-policy-binding gh-actions-1506 \
+    --member "serviceAccount:ghactions-sa@gh-actions-1506.iam.gserviceaccount.com" \
+    --role "roles/artifactregistry.writer"
+
+gcloud projects add-iam-policy-binding gh-actions-1506 \
+--member "serviceAccount:ghactions-sa@gh-actions-1506.iam.gserviceaccount.com" \
+--role "roles/run.admin"
+```
