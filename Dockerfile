@@ -17,6 +17,10 @@ RUN curl -o actions-runner-linux-x64-2.285.0.tar.gz -L https://github.com/action
     && tar xzf ./actions-runner-linux-x64-2.285.0.tar.gz \
     && rm ./actions-runner-linux-x64-2.285.0.tar.gz
 
+ENV NODE_ENV=production \
+HOSTNAME="0.0.0.0" \
+NEXT_TELEMETRY_DISABLED=1
+
 # Copy the entrypoint script
 COPY entrypoint.sh /home/runner/entrypoint.sh
 
