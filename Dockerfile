@@ -1,28 +1,33 @@
-# GH Actions Runner
+FROM ubuntu:22.04
 
-FROM python:3.9-slim
+# Set environment variables to avoid interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Clear the APT cache and update package lists
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    bash 
+# Use a different mirror for the Ubuntu repository
+RUN sed -i 's|http://archive.ubuntu.com/ubuntu/|http://us.archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list
 
-# Create a user
-RUN useradd -m runner
+ARG GITHUB_RUNNER_VERSION=2.286.1
+ARG DEBIAN_FRONTEND=noninteractive
 
-WORKDIR /home/runner
+USER root
+WORKDIR /root
 
-# Download and install GitHub Actions runner
-RUN curl -o actions-runner-linux-x64-2.285.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.285.0/actions-runner-linux-x64-2.285.0.tar.gz \
-    && tar xzf ./actions-runner-linux-x64-2.285.0.tar.gz \
-    && rm ./actions-runner-linux-x64-2.285.0.tar.gz
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl sudo jq iputils-ping zip libssl-dev libcurl4-gnutls-dev zlib1g-dev gettext make build-essential python3-pip wget cmake clang perl psmisc software-properties-common git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-ENV NODE_ENV=production \
-HOSTNAME="0.0.0.0" \
-NEXT_TELEMETRY_DISABLED=1
+USER root
 
-# Copy the entrypoint script
-COPY entrypoint.sh /home/runner/entrypoint.sh
+RUN apt-get update && apt install wget -y
+RUN wget https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz \
+    && tar xzf ./actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz && rm -f actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz \
+    && sed -i '3,9d' ./config.sh \
+    && sed -i '3,8d' ./run.sh
 
-# Run the entrypoint script
-CMD ["bash", "/home/runner/entrypoint.sh"]
+RUN  /root/bin/installdependencies.sh
+
+COPY entrypoint.sh runsvc.sh ./
+RUN sudo chmod u+x ./entrypoint.sh ./runsvc.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
