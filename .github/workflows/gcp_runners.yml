@@ -55,3 +55,5 @@ jobs:
       - name: Push Image to Google Artifact Registry
         run: |
           docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
+
+  # Deploy to github hosted container

@@ -74,29 +74,37 @@ jobs:
       #   run: terraform apply -auto-approve tfplan
       #   working-directory: terraform
 
+      # Deploy the docker image to kubernetes
+      # - name: Deploy to Kubernetes
+      #   run: |
+      #     kubectl apply -f k8s/deployment.yaml
+      #     kubectl apply -f k8s/service.yaml
+      
+
+
       # Deploy the image from Artifact Registry to Cloud Run
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy my-cloud-run-service \
-            --image "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \
-            --region ${{ vars.GCP_REGION }} \
-            --no-allow-unauthenticated \
-            --platform managed \
-            --port 8080 \
-            --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}
+      # - name: Deploy to Cloud Run
+      #   run: |
+      #     gcloud run deploy my-cloud-run-service \
+      #       --image "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \
+      #       --region ${{ vars.GCP_REGION }} \
+      #       --no-allow-unauthenticated \
+      #       --platform managed \
+      #       --port 8080 \
+      #       --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}
 
       # Get Identity Token for Cloud Run invocation
-      - name: Get ID Token
-        id: 'auth'
-        run: |
-          export ID_TOKEN=$(gcloud auth print-identity-token)
-          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
+      # - name: Get ID Token
+      #   id: 'auth'
+      #   run: |
+      #     export ID_TOKEN=$(gcloud auth print-identity-token)
+      #     echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
 
       # Invoke Cloud Run Service
-      - name: Invoke Cloud Run Service
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ env.ID_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{"message":"Hello from GitHub Actions"}' \
-            https://my-cloud-run-service-${{ vars.GCP_REGION }}.a.run.app
+      # - name: Invoke Cloud Run Service
+      #   run: |
+      #     curl -X POST \
+      #       -H "Authorization: Bearer ${{ env.ID_TOKEN }}" \
+      #       -H "Content-Type: application/json" \
+      #       -d '{"message":"Hello from GitHub Actions"}' \
+      #       https://my-cloud-run-service-${{ vars.GCP_REGION }}.a.run.app
