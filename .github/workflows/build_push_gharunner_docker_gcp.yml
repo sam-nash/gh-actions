@@ -1,4 +1,4 @@
-name: GH Actions Runner with Cloud Run
+name: Build and Push GH Actions Runner Docker Image to Google Artifact Registry
 
 on:
   push:
@@ -56,4 +56,3 @@ jobs:
         run: |
           docker push ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
 
-  # Deploy to github hosted container
