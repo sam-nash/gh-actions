@@ -25,7 +25,7 @@ RUN wget https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VE
     && sed -i '3,9d' ./config.sh \
     && sed -i '3,8d' ./run.sh
 
-RUN  /root/bin/installdependencies.sh
+# RUN  /root/bin/installdependencies.sh
 
 COPY entrypoint.sh runsvc.sh ./
 RUN sudo chmod u+x ./entrypoint.sh ./runsvc.sh
