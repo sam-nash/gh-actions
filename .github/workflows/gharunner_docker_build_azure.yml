@@ -1,5 +1,5 @@
 # Github actions workflow to build the dockerfile and push the image to azure container registry
-name: Build-Push GHAR Docker Image to ACR
+name: Build Push GHAR Docker Image to ACR
 
 on:
     push:
