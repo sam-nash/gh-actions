@@ -31,4 +31,4 @@ RUN GITHUB_RUNNER_VERSION=$(curl --silent "https://api.github.com/repos/actions/
 COPY --chown=github:github entrypoint2.sh runsvc2.sh ./
 RUN sudo chmod u+x ./entrypoint2.sh ./runsvc2.sh
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint2.sh"]
