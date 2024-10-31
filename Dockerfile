@@ -27,7 +27,9 @@ RUN wget https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VE
 
 # RUN  /root/bin/installdependencies.sh
 
-COPY entrypoint.sh runsvc.sh ./
-RUN sudo chmod u+x ./entrypoint.sh ./runsvc.sh
+COPY entrypoint.sh ./
+# runsvc.sh 
+RUN sudo chmod u+x ./entrypoint.sh 
+# ./runsvc.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
