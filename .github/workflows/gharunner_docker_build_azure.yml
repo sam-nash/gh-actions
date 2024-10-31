@@ -38,14 +38,14 @@ jobs:
 
         - name: Build Docker Image
           run: |
-            docker buildx build --platform linux/amd64 -t actions-runner:latest --load .
+            docker buildx build --platform linux/amd64 -t gh-actions-runner:latest -f Dockerfile.ghrunner --load .
             echo "Checking the Docker images"
             docker images
 
         - name: Tag Docker Image
           run: |
-            docker tag actions-runner:latest ${{ vars.ACR_REGISTRY }}/my-repo/actions-runner:latest
+            docker tag gh-actions-runner:latest ${{ vars.ACR_REGISTRY }}/my-repo/gh-actions-runner:latest
 
         - name: Push Image to Azure Container Registry
           run: |
-            docker push ${{ vars.ACR_REGISTRY }}/my-repo/actions-runner:latest
+            docker push ${{ vars.ACR_REGISTRY }}/my-repo/gh-actions-runner:latest
