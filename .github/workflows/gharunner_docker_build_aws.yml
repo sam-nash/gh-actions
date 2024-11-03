@@ -40,9 +40,7 @@ jobs:
         skip-logout: false
 
     - name: Build, tag, and push Docker image
-      env:
-        AWS_ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
       run: |
-        docker build -t ${AWS_ECR_REGISTRY}/my-repo:latest -f Dockerfile.ghrunner .
-        docker tag ${AWS_ECR_REGISTRY}/my-repo:latest $AWS_ECR_REGISTRY/my-repo:latest
-        docker push ${AWS_ECR_REGISTRY}/my-repo:latest 
+        docker build -t gh-actions-runner/my-repo:latest -f Dockerfile.ghrunner .
+        docker tag gh-actions-runner/my-repo:latest $AWS_ECR_REGISTRY/my-repo:latest
+        docker push gh-actions-runner/my-repo:latest 
