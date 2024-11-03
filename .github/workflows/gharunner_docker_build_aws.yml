@@ -1,4 +1,4 @@
-# Github actions workflow to build and push the docker image to aws elastic container registry 
+# Github actions workflow to build and push the docker image to aws elastic container registry
 
 name: Build Push GHAR Docker Image to ECR
 
