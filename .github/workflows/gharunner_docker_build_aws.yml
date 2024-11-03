@@ -41,6 +41,6 @@ jobs:
 
     - name: Build, tag, and push Docker image
       run: |
-        docker build -t gh-actions-runner/my-repo:latest -f Dockerfile.ghrunner .
-        docker tag gh-actions-runner/my-repo:latest gh-actions-runner/my-repo:latest
-        docker push gh-actions-runner/my-repo:latest 
+        docker build -t gh-actions-runner.dkr.ecr.us-east-1.amazonaws.com/my-repo:latest -f Dockerfile.ghrunner .
+        docker tag gh-actions-runner.dkr.ecr.us-east-1.amazonaws.com/my-repo:latest gh-actions-runner/my-repo:latest
+        docker push gh-actions-runner.dkr.ecr.us-east-1.amazonaws.com/my-repo:latest 
