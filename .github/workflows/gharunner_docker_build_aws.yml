@@ -34,15 +34,11 @@ jobs:
     - name: Log in to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
-      with:
-        mask-password: true
-        registry-type: private
-        skip-logout: false
 
     - name: Build, tag, and push Docker image
       env:
         AWS_ECR_REGISTRY: 587340361826.dkr.ecr.ap-southeast-2.amazonaws.com
       run: |
-            echo "AWS_ECR_REGISTRY: $AWS_ECR_REGISTRY"
-            docker build -t $AWS_ECR_REGISTRY/my-repo:latest -f Dockerfile.ghrunner .
-            docker push $AWS_ECR_REGISTRY/my-repo:latest
+        echo "AWS_ECR_REGISTRY: $AWS_ECR_REGISTRY"
+        docker build -t $AWS_ECR_REGISTRY/my-repo:latest -f Dockerfile.ghrunner .
+        docker push $AWS_ECR_REGISTRY/my-repo:latest
