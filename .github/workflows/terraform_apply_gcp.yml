@@ -101,10 +101,10 @@ jobs:
       #     echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
 
       # Invoke Cloud Run Service
-      # - name: Invoke Cloud Run Service
-      #   run: |
-      #     curl -X POST \
-      #       -H "Authorization: Bearer ${{ env.ID_TOKEN }}" \
-      #       -H "Content-Type: application/json" \
-      #       -d '{"message":"Hello from GitHub Actions"}' \
-      #       https://my-cloud-run-service-${{ vars.GCP_REGION }}.a.run.app
+      - name: Invoke Cloud Run Service
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ env.ID_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"message":"Hello from GitHub Actions"}' \
+            https://my-cloud-run-service-${{ vars.GCP_REGION }}.a.run.app
