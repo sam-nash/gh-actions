@@ -100,7 +100,7 @@ jobs:
             GITHUB_REPOSITORY=gh-actions
             GITHUB_OWNER=sam-nash
           region: ${{ vars.GCP_REGION }}
-          flags: '--no-allow-unauthenticated --platform managed --port 8080 -service-account ${{ vars.GCP_SERVICE_ACCOUNT }}'
+          flags: '--no-allow-unauthenticated --platform managed --port 8080 --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}'
 
 
       # - name: Deploy to Cloud Run
