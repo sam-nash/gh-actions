@@ -74,17 +74,27 @@ remove() {
 trap 'remove; exit 130' INT
 trap 'remove; exit 143' TERM
 
-# Configure the runner
-./config.sh --url https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY} --token ${RUNNER_TOKEN} --name $(hostname) --work ${RUNNER_WORKDIR} --labels ${RUNNER_LABELS} --unattended --replace
+# Ensure required environment variables are set
+if [ -z "${GITHUB_OWNER}" ] || [ -z "${GITHUB_REPOSITORY}" ] || [ -z "${GITHUB_TOKEN}" ]; then
+    echo "Error: GITHUB_OWNER, GITHUB_REPOSITORY, and GITHUB_TOKEN must be set."
+    exit 1
+fi
 
-# ./config.sh \
-#     --name "${RUNNER_NAME}" \
-#     --token "${RUNNER_TOKEN}" \
-#     --url "${registration_url}" \
-#     --work "${RUNNER_WORKDIR}" \
-#     --labels "${RUNNER_LABELS}" \
-#     --unattended \
-#     --replace
+# Debugging: Print environment variables
+echo "GITHUB_OWNER: ${GITHUB_OWNER}"
+echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+echo "GITHUB_TOKEN: ${GITHUB_TOKEN}"
+echo "RUNNER_WORKDIR: ${RUNNER_WORKDIR}"
+echo "RUNNER_LABELS: ${RUNNER_LABELS}"
+
+# Configure the runner
+./config.sh --url https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY} --token ${GITHUB_TOKEN} --name $(hostname) --work ${RUNNER_WORKDIR} --labels ${RUNNER_LABELS} --unattended --replace
+
+# Check if the configuration was successful
+if [ $? -ne 0 ]; then
+    echo "Error: Runner configuration failed."
+    exit 1
+fi
     
 echo "Starting runner..."
 ./runsvc2.sh "$*" &
