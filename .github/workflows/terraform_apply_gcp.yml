@@ -116,4 +116,4 @@ jobs:
             -H "Authorization: Bearer ${{ steps.auth.outputs.ID_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{"message":"Hello from GitHub Actions"}' \
-            https://gha-runner-service-${{ vars.GCP_REGION }}.a.run.app
+            https://gha-runner-service-${{ vars.GCP_PROJECT_ID_VAL }}-${{ vars.GCP_REGION }}.a.run.app
