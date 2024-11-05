@@ -75,16 +75,16 @@ trap 'remove; exit 130' INT
 trap 'remove; exit 143' TERM
 
 # Configure the runner
-# ./config.sh --url https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY} --token ${GITHUB_TOKEN} --name $(hostname) --work ${RUNNER_WORKDIR} --labels ${RUNNER_LABELS} --unattended --replace
+./config.sh --url https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY} --token ${RUNNER_TOKEN} --name $(hostname) --work ${RUNNER_WORKDIR} --labels ${RUNNER_LABELS} --unattended --replace
 
-./config.sh \
-    --name "${RUNNER_NAME}" \
-    --token "${RUNNER_TOKEN}" \
-    --url "${registration_url}" \
-    --work "${RUNNER_WORKDIR}" \
-    --labels "${RUNNER_LABELS}" \
-    --unattended \
-    --replace
+# ./config.sh \
+#     --name "${RUNNER_NAME}" \
+#     --token "${RUNNER_TOKEN}" \
+#     --url "${registration_url}" \
+#     --work "${RUNNER_WORKDIR}" \
+#     --labels "${RUNNER_LABELS}" \
+#     --unattended \
+#     --replace
     
 echo "Starting runner..."
 ./runsvc2.sh "$*" &
