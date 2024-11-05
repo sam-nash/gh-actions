@@ -96,7 +96,7 @@ echo "RUNNER_LABELS: ${RUNNER_LABELS}"
 RUNNER_ALLOW_RUNASROOT="1"
 
 # Configure the runner
-./config.sh --url https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY} --token ${RUNNER_TOKEN} --name $(hostname) --work ${RUNNER_WORKDIR} --labels ${RUNNER_LABELS} --unattended --replace
+AGENT_ALLOW_RUNASROOT=1 ./config.sh --url https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY} --token ${RUNNER_TOKEN} --name $(hostname) --work ${RUNNER_WORKDIR} --labels ${RUNNER_LABELS} --unattended --replace
 
 # Check if the configuration was successful
 if [ $? -ne 0 ]; then
