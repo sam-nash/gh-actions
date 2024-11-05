@@ -82,7 +82,8 @@ jobs:
       
 
 
-      # Deploy the image from Artifact Registry to Cloud Run
+      # Deploy the image from Artifact Registry to Cloud Run with environment variables
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy gha-runner-service \
@@ -92,6 +93,7 @@ jobs:
             --platform managed \
             --port 8080 \
             --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}
+            --set-env-vars GITHUB_PAT=${{ secrets.GH_RUNNER_PAT }},GITHUB_REPOSITORY=gh-actions,GITHUB_OWNER=sam-nash
 
       # Get Identity Token for Cloud Run invocation
       - name: Get ID Token
