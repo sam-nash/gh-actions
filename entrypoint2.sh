@@ -35,7 +35,9 @@ else # this bliock is executed
     echo "Requesting token at '${token_url}'"
 
     payload=$(curl -sX POST -H "Authorization: token ${GITHUB_PAT}" ${token_url})
+    echo "payload: ${payload}"
     export RUNNER_TOKEN=$(echo $payload | jq .token --raw-output)
+    echo "Runner token: ${RUNNER_TOKEN}"
 
 fi
 
@@ -47,9 +49,13 @@ fi
 
 echo "Runner name: ${RUNNER_NAME}"
 
-# list the files in the current directory
-echo "Listing files in the current directory..."
-ls -la
+if [ -z "${RUNNER_LABELS}" ]; then
+    RUNNER_LABELS="gha_self_hosted_runner"
+fi
+
+if [ -z "${RUNNER_WORKDIR}" ]; then
+    RUNNER_WORKDIR="_work"
+fi
 
 # ./config.sh \
 #     --name "${RUNNER_NAME}" \
