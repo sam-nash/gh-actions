@@ -18,7 +18,7 @@ RUN apt-get update \
 RUN apt-get update && apt install wget -y
 RUN GITHUB_RUNNER_VERSION=$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | jq -r '.tag_name[1:]') \
     && curl -Ls https://github.com/actions/runner/releases/download/v${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz | tar xz \
-    && sudo ./bin/installdependencies.sh \
+    && sudo /bin/installdependencies.sh \
     && sed -i '3,9d' ./config.sh \
     && sed -i '3,8d' ./run.sh
 
