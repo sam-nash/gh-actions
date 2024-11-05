@@ -9,7 +9,7 @@ fi
 
 echo "Additional Package check complete..."
 
-registration_url="https://github.com/${GITHUB_OWNER}"
+    tps://github.com/${GITHUB_OWNER}"
 token_url="https://api.github.com/orgs/${GITHUB_OWNER}/actions/runners/registration-token"
 
 echo "Checking if GITHUB_TOKEN is set..."
