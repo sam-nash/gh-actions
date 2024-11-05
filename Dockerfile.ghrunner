@@ -31,5 +31,8 @@ COPY entrypoint2.sh runsvc2.sh ./
 RUN chmod 777 ./entrypoint2.sh ./runsvc2.sh
 # List the files in the current directory
 RUN ls -l
+RUN ls -l bin
+RUN ls -l externals
 
-ENTRYPOINT ["/entrypoint2.sh"]
+
+ENTRYPOINT ["./entrypoint2.sh"]
