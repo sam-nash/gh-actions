@@ -33,4 +33,6 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
+# add a wait command for 30 seconds
+      - run: wait 30
       - run: echo 'Hi Sam'
