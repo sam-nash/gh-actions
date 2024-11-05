@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+echo "Starting script..."
 
 if [ -n "${ADDITIONAL_PACKAGES}" ]; then
     TO_BE_INSTALLED=$(echo ${ADDITIONAL_PACKAGES} | tr "," " " )
@@ -6,8 +7,12 @@ if [ -n "${ADDITIONAL_PACKAGES}" ]; then
     sudo apt-get update && sudo apt-get install -y ${TO_BE_INSTALLED} && sudo apt-get clean
 fi
 
+echo "Additional Package check complete..."
+
 registration_url="https://github.com/${GITHUB_OWNER}"
 token_url="https://api.github.com/orgs/${GITHUB_OWNER}/actions/runners/registration-token"
+
+echo "Checking if GITHUB_TOKEN is set..."
 
 if [ -n "${GITHUB_TOKEN}" ]; then
     echo "Using given GITHUB_TOKEN"
@@ -32,6 +37,8 @@ else
     export RUNNER_TOKEN=$(echo $payload | jq .token --raw-output)
 
 fi
+
+echo "Starting runner..."
 
 if [ -z "${RUNNER_NAME}" ]; then
     RUNNER_NAME=$(hostname)
@@ -60,6 +67,6 @@ remove() {
 trap 'remove; exit 130' INT
 trap 'remove; exit 143' TERM
 
-./runsvc.sh "$*" &
+./runsvc2.sh "$*" &
 
 wait $!

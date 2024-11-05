@@ -1,0 +1,48 @@
+# Deploy an image in ECR to Lambda
+
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        run: |
+            aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.AWS_ECR_REGISTRY }}
+
+      - name: Create IAM role for Lambda
+        id: create-iam-role
+        run: |
+          aws iam create-role \
+            --role-name lambda-execution-role \
+            --assume-role-policy-document file://trust-policy.json
+
+          aws iam attach-role-policy \
+            --role-name lambda-execution-role \
+            --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+      - name: Create Lambda function
+        id: create-lambda
+        run: |
+          aws lambda create-function \
+            --function-name gha-runner \
+            --package-type Image \
+            --code ImageUri=${{ vars.AWS_ECR_REGISTRY }}/gh-actions-runner:latest \
+            --role arn:aws:iam::$(aws sts get-caller-identity --query Account --output text):role/lambda-execution-role
+
+      - name: Update Lambda function
+        id: update-lambda
+        run: |
+          aws lambda update-function-code \
+            --function-name gha-runner \
+            --image-uri ${{ vars.AWS_ECR_REGISTRY }}/gh-actions-runner:latest

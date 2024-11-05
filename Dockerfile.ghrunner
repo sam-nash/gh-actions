@@ -32,4 +32,4 @@ RUN chmod 777 ./entrypoint2.sh ./runsvc2.sh
 # List the files in the current directory
 RUN ls -l
 
-CMD ["sh", "-c", "./entrypoint2.sh"]
+ENTRYPOINT ["/entrypoint2.sh"]

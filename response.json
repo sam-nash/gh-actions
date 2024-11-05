@@ -1,0 +1,1 @@
+{"errorType":"Runtime.InvalidEntrypoint","errorMessage":"RequestId: 3fa1a999-a4a9-4905-bf7e-62b10e43615d Error: fork/exec ./entrypoint2.sh: permission denied"}
