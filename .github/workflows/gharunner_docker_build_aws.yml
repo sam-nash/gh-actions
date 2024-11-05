@@ -9,6 +9,8 @@ on:
     paths:
       - '.github/workflows/gharunner_docker_build_aws.yml'
       - 'Dockerfile.ghrunner'
+      - entrypoint2.sh
+      - runsvc2.sh
   pull_request:
     branches:
       - main
