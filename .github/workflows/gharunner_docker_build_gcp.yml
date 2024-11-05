@@ -1,4 +1,4 @@
-name: Build and Push GH Actions Runner Docker Image to Google Artifact Registry
+name: GAR GHAR Docker Image Build and Push
 
 on:
   push:
@@ -6,13 +6,13 @@ on:
       - main
     paths:
       - '.github/workflows/gcp_runners.yml'
-      - 'Dockerfile'
+      - 'Dockerfile.ghrunner'
   pull_request:
     branches:
       - main
     paths:
       - '.github/workflows/gcp_runners.yml'
-      - 'Dockerfile'
+      - 'Dockerfile.ghrunner'
 
 jobs:
   docker-build:
@@ -44,9 +44,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker buildx build --platform linux/amd64 -t actions-runner:latest --load .
-          echo "Checking the Docker images"
-          docker images
+          docker buildx build --platform linux/amd64 -t actions-runner:latest -f Dockerfile.ghrunner --load .
 
       - name: Tag Docker Image
         run: |
