@@ -41,5 +41,6 @@ jobs:
         AWS_ECR_REGISTRY: ${{ vars.AWS_ECR_REGISTRY }}
       run: |
         echo "AWS_ECR_REGISTRY: $AWS_ECR_REGISTRY"
-        docker build -t $AWS_ECR_REGISTRY/my-repo:latest -f Dockerfile.ghrunner .
-        docker push $AWS_ECR_REGISTRY/my-repo:latest
+        docker build -t gha-runner -f Dockerfile.ghrunner .
+        docker tag gha-runner:latest $AWS_ECR_REGISTRY/gha-runner:latest
+        docker push $AWS_ECR_REGISTRY/gha-runner:latest
