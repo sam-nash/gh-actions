@@ -28,7 +28,7 @@ RUN GITHUB_RUNNER_VERSION=$(curl --silent "https://api.github.com/repos/actions/
     && sudo ./bin/installdependencies.sh
 
 COPY entrypoint2.sh runsvc2.sh ./
-RUN chmod +x ./entrypoint2.sh ./runsvc2.sh
+RUN chmod 777 ./entrypoint2.sh ./runsvc2.sh
 # List the files in the current directory
 RUN ls -l
 
