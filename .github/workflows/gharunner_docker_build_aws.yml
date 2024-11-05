@@ -43,4 +43,5 @@ jobs:
         echo "AWS_ECR_REGISTRY: $AWS_ECR_REGISTRY"
         docker build -t gha-runner -f Dockerfile.ghrunner .
         docker tag gha-runner:latest $AWS_ECR_REGISTRY/gha-runner:latest
+        aws ecr describe-repositories --repository-names gha-runner || aws ecr create-repository --repository-name gha-runner
         docker push $AWS_ECR_REGISTRY/gha-runner:latest
