@@ -4,6 +4,11 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [terraform_apply]
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/terraform_apply_gcp.yml'
 
 jobs:
   terraform:
@@ -90,8 +95,8 @@ jobs:
         with:
           service: 'gha-runner-service'
           image: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
-          secrets: |
-            GITHUB_PAT=projects/180855126385/secrets/GH_RUNNER_PAT
+          env_vars: |
+            GITHUB_PAT=${{ secrets.GH_RUNNER_PAT }}
             GITHUB_REPOSITORY=gh-actions
             GITHUB_OWNER=sam-nash
           region: ${{ vars.GCP_REGION }}
