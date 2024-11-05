@@ -102,18 +102,6 @@ jobs:
           region: ${{ vars.GCP_REGION }}
           flags: '--no-allow-unauthenticated --platform managed --port 8080 --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}'
 
-
-      # - name: Deploy to Cloud Run
-      #   run: |
-      #     gcloud run deploy gha-runner-service \
-      #       --image "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \
-      #       --region ${{ vars.GCP_REGION }} \
-      #       --no-allow-unauthenticated \
-      #       --platform managed \
-      #       --port 8080 \
-      #       --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}
-      #       --set-env-vars GITHUB_PAT=${{ secrets.GH_RUNNER_PAT }},GITHUB_REPOSITORY=gh-actions,GITHUB_OWNER=sam-nash
-
       # Get Identity Token for Cloud Run invocation
       - name: Get ID Token
         id: 'auth'
