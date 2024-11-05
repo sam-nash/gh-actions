@@ -9,12 +9,12 @@ fi
 
 echo "Additional Package check complete..."
 
-    tps://github.com/${GITHUB_OWNER}"
+registration_url="https://github.com/${GITHUB_OWNER}"
 token_url="https://api.github.com/orgs/${GITHUB_OWNER}/actions/runners/registration-token"
 
 echo "Checking if GITHUB_TOKEN is set..."
 
-if [ -n "${GITHUB_TOKEN}" ]; then
+if [ -n "${GITHUB_TOKEN}" ]; then  # This is skipped
     echo "Using given GITHUB_TOKEN"
 
     if [ -z "${GITHUB_REPOSITORY}" ]; then
@@ -25,10 +25,11 @@ if [ -n "${GITHUB_TOKEN}" ]; then
     registration_url="https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY}"
     export RUNNER_TOKEN=$GITHUB_TOKEN
 
-else
+else # this bliock is executed
     if [ -n "${GITHUB_REPOSITORY}" ]; then
         token_url="https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/actions/runners/registration-token"
         registration_url="${registration_url}/${GITHUB_REPOSITORY}"
+        echo "Registration URL: ${registration_url}"
     fi
 
     echo "Requesting token at '${token_url}'"
@@ -46,14 +47,18 @@ fi
 
 echo "Runner name: ${RUNNER_NAME}"
 
-./config.sh \
-    --name "${RUNNER_NAME}" \
-    --token "${RUNNER_TOKEN}" \
-    --url "${registration_url}" \
-    --work "${RUNNER_WORKDIR}" \
-    --labels "${RUNNER_LABELS}" \
-    --unattended \
-    --replace
+# list the files in the current directory
+echo "Listing files in the current directory..."
+ls -la
+
+# ./config.sh \
+#     --name "${RUNNER_NAME}" \
+#     --token "${RUNNER_TOKEN}" \
+#     --url "${registration_url}" \
+#     --work "${RUNNER_WORKDIR}" \
+#     --labels "${RUNNER_LABELS}" \
+#     --unattended \
+#     --replace
 
 remove() {
     if [ -n "${GITHUB_TOKEN}" ]; then
@@ -69,7 +74,19 @@ remove() {
 trap 'remove; exit 130' INT
 trap 'remove; exit 143' TERM
 
-echo "Starting service..."
+# Configure the runner
+# ./config.sh --url https://github.com/${GITHUB_OWNER}/${GITHUB_REPOSITORY} --token ${GITHUB_TOKEN} --name $(hostname) --work ${RUNNER_WORKDIR} --labels ${RUNNER_LABELS} --unattended --replace
+
+./config.sh \
+    --name "${RUNNER_NAME}" \
+    --token "${RUNNER_TOKEN}" \
+    --url "${registration_url}" \
+    --work "${RUNNER_WORKDIR}" \
+    --labels "${RUNNER_LABELS}" \
+    --unattended \
+    --replace
+    
+echo "Starting runner..."
 ./runsvc2.sh "$*" &
 
 wait $!
