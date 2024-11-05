@@ -35,4 +35,4 @@ jobs:
       - run: |
           echo Running on self hosted runner
           echo 'Hi ${{ env.mascot }}'  # Hi Mona
-          echo 'Hi Sam'
+          echo 'Hi Sam!'
