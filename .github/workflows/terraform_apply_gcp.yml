@@ -39,35 +39,35 @@ jobs:
         run: >-
           gcloud auth login --cred-file=${{steps.authenticate.outputs.credentials_file_path}}
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.0
+      # - name: Set up Terraform
+      #   uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     terraform_version: 1.0.0
 
-      - name: Terraform Init
-        id: init
-        run: terraform init
-        working-directory: terraform
+      # - name: Terraform Init
+      #   id: init
+      #   run: terraform init
+      #   working-directory: terraform
 
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt
-        working-directory: terraform
+      # - name: Terraform Format
+      #   id: fmt
+      #   run: terraform fmt
+      #   working-directory: terraform
 
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate
-        working-directory: terraform
+      # - name: Terraform Validate
+      #   id: validate
+      #   run: terraform validate
+      #   working-directory: terraform
 
       # Run a gcloud command to test authentication
       - name: List Google Cloud Projects
         run: |
           gcloud projects list
 
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan -out=tfplan
-        working-directory: terraform
+      # - name: Terraform Plan
+      #   id: plan
+      #   run: terraform plan -out=tfplan
+      #   working-directory: terraform
 
       # - name: Terraform Apply
       #   id: apply
@@ -83,28 +83,28 @@ jobs:
 
 
       # Deploy the image from Artifact Registry to Cloud Run
-      # - name: Deploy to Cloud Run
-      #   run: |
-      #     gcloud run deploy my-cloud-run-service \
-      #       --image "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \
-      #       --region ${{ vars.GCP_REGION }} \
-      #       --no-allow-unauthenticated \
-      #       --platform managed \
-      #       --port 8080 \
-      #       --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy gha-runner-service \
+            --image "${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest" \
+            --region ${{ vars.GCP_REGION }} \
+            --no-allow-unauthenticated \
+            --platform managed \
+            --port 8080 \
+            --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}
 
       # Get Identity Token for Cloud Run invocation
-      # - name: Get ID Token
-      #   id: 'auth'
-      #   run: |
-      #     export ID_TOKEN=$(gcloud auth print-identity-token)
-      #     echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
+      - name: Get ID Token
+        id: 'auth'
+        run: |
+          export ID_TOKEN=$(gcloud auth print-identity-token)
+          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
 
       # Invoke Cloud Run Service
       - name: Invoke Cloud Run Service
         run: |
           curl -X POST \
-            -H "Authorization: Bearer ${{ env.ID_TOKEN }}" \
+            -H "Authorization: Bearer ${{ steps.auth.outputs.ID_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{"message":"Hello from GitHub Actions"}' \
-            https://my-cloud-run-service-${{ vars.GCP_REGION }}.a.run.app
+            https://gha-runner-service-${{ vars.GCP_REGION }}.a.run.app
