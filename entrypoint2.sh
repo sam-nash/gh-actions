@@ -44,6 +44,8 @@ if [ -z "${RUNNER_NAME}" ]; then
     RUNNER_NAME=$(hostname)
 fi
 
+echo "Runner name: ${RUNNER_NAME}"
+
 ./config.sh \
     --name "${RUNNER_NAME}" \
     --token "${RUNNER_TOKEN}" \
@@ -67,6 +69,7 @@ remove() {
 trap 'remove; exit 130' INT
 trap 'remove; exit 143' TERM
 
+echo "Starting service..."
 ./runsvc2.sh "$*" &
 
 wait $!
