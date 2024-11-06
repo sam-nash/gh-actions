@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Generate a random string using uuidgen
-RANDOM_STRING=$(uuidgen)
-
 echo "Starting script..."
 
 if [ -n "${ADDITIONAL_PACKAGES}" ]; then
@@ -49,7 +46,7 @@ echo "Starting runner..."
 
 if [ -z "${RUNNER_NAME}" ]; then
     # suffix a time string to the runner name to avoid name conflicts
-    RUNNER_NAME=$(hostname)-${RANDOM_STRING}
+    RUNNER_NAME=$(hostname)-${RANDOM}
 fi
 
 echo "Runner name: ${RUNNER_NAME}"
