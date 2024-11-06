@@ -87,7 +87,7 @@ jobs:
       
 
 
-      # Deploy the image from Artifact Registry to Cloud Run with environment variables2
+      # Deploy the image from Artifact Registry to Cloud Run with environment variables
       - name: Deploy to Cloud Run
         id: 'deploy'
         uses: 'google-github-actions/deploy-cloudrun@v2'
