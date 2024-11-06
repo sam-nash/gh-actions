@@ -89,31 +89,34 @@ jobs:
 
       # Deploy the image from Artifact Registry to Cloud Run with environment variables
 
-      # - name: Deploy to Cloud Run
-      #   id: 'deploy'
-      #   uses: 'google-github-actions/deploy-cloudrun@v2'
-      #   with:
-      #     service: 'gha-runner-service'
-      #     image: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
-      #     env_vars: |
-      #       GITHUB_PAT=${{ secrets.GH_RUNNER_PAT }}
-      #       GITHUB_REPOSITORY=gh-actions
-      #       GITHUB_OWNER=sam-nash
-      #     region: ${{ vars.GCP_REGION }}
-      #     flags: '--no-allow-unauthenticated --platform managed --port 8080 --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}'
+      - name: Deploy to Cloud Run
+        id: 'deploy'
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: 'gha-runner-service'
+          image: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
+          env_vars: |
+            GITHUB_PAT=${{ secrets.GH_RUNNER_PAT }}
+            GITHUB_REPOSITORY=gh-actions
+            GITHUB_OWNER=sam-nash
+          region: ${{ vars.GCP_REGION }}
+          flags: '--no-allow-unauthenticated --platform managed --port 8080 --service-account ${{ vars.GCP_SERVICE_ACCOUNT }}'
 
-      # Get Identity Token for Cloud Run invocation
-      - name: Get ID Token
-        id: 'auth'
+      - name: Get Deployed Service Name
+        id: get-service-name
         run: |
-          export ID_TOKEN=$(gcloud auth print-identity-token)
-          echo "ID_TOKEN=${ID_TOKEN}" >> $GITHUB_ENV
+          SERVICE_NAME=$(gcloud run services list --filter="metadata.name:gha-runner-service" --format="value(metadata.name)" --region ${{ vars.GCP_REGION }})
+          echo "SERVICE_NAME=${SERVICE_NAME}" >> $GITHUB_ENV
 
-      # Invoke Cloud Run Service
-      - name: Invoke Cloud Run Service
+      - name: Monitor Logs and Tear Down
         run: |
-          curl -X POST \
-            -H "Authorization: Bearer ${{ steps.auth.outputs.ID_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{"message":"Hello from GitHub Actions"}' \
-            https://gha-runner-service-${{ vars.GCP_PROJECT_ID_VAL }}-${{ vars.GCP_REGION }}.a.run.app
+          while true; do
+            LOGS=$(gcloud logging read "resource.type=cloud_run_revision AND resource.labels.service_name=${{ steps.get-service-name.outputs.SERVICE_NAME }} AND textPayload: 'Job self_hosted_job completed with result: Succeeded'" --limit 1 --format "value(textPayload)")
+            if [[ ! -z "$LOGS" ]]; then
+              echo "Job completed. Tearing down the Cloud Run service."
+              gcloud run services delete ${{ steps.get-service-name.outputs.SERVICE_NAME }} --region ${{ vars.GCP_REGION }} --platform managed --quiet
+              break
+            fi
+            echo "Waiting for job to complete..."
+            sleep 30
+          done
