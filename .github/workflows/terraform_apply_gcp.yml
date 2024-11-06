@@ -93,7 +93,7 @@ jobs:
         id: 'deploy'
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
-          service: 'gha-runner-service-1'
+          service: 'gha-runner-service-2'
           image: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID_VAL }}/my-repo/actions-runner:latest
           env_vars: |
             GITHUB_PAT=${{ secrets.GH_RUNNER_PAT }}
