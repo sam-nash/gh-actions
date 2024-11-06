@@ -39,9 +39,9 @@ else # this bliock is executed
     echo "Requesting token at '${token_url}'"
 
     payload=$(curl -sX POST -H "Authorization: token ${GITHUB_PAT}" ${token_url})
-    echo "payload: ${payload}"
+    # echo "payload: ${payload}"
     export RUNNER_TOKEN=$(echo $payload | jq .token --raw-output)
-    echo "Runner token: ${RUNNER_TOKEN}"
+    # echo "Runner token: ${RUNNER_TOKEN}"
 
 fi
 
