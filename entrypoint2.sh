@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Generate a random string using uuidgen
+RANDOM_STRING=$(uuidgen)
+
 echo "Starting script..."
 
 if [ -n "${ADDITIONAL_PACKAGES}" ]; then
@@ -45,7 +49,7 @@ echo "Starting runner..."
 
 if [ -z "${RUNNER_NAME}" ]; then
     # suffix a time string to the runner name to avoid name conflicts
-    RUNNER_NAME=$(hostname)-$(date "+%Y%m%d%H%M%S")
+    RUNNER_NAME=$(hostname)-${RANDOM_STRING}
 fi
 
 echo "Runner name: ${RUNNER_NAME}"
@@ -90,7 +94,7 @@ fi
 # Debugging: Print environment variables
 echo "GITHUB_OWNER: ${GITHUB_OWNER}"
 echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
-echo "RUNNER_TOKEN: ${RUNNER_TOKEN}"
+# echo "RUNNER_TOKEN: ${RUNNER_TOKEN}"
 echo "RUNNER_WORKDIR: ${RUNNER_WORKDIR}"
 echo "RUNNER_LABELS: ${RUNNER_LABELS}"
 
