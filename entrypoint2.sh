@@ -44,7 +44,8 @@ fi
 echo "Starting runner..."
 
 if [ -z "${RUNNER_NAME}" ]; then
-    RUNNER_NAME=$(hostname)
+    # suffix a time string to the runner name to avoid name conflicts
+    RUNNER_NAME=$(hostname)-$(date "+%Y%m%d%H%M%S")
 fi
 
 echo "Runner name: ${RUNNER_NAME}"
