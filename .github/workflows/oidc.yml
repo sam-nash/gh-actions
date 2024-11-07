@@ -57,13 +57,18 @@ jobs:
         payload=$(echo "$OIDC_TOKEN" | cut -d '.' -f2)
 
         # Ensure correct padding for base64 decoding
-        padded_payload=$(echo "$payload" | sed -E 's/(-|_)+/+/g; s/_/\//g; s/.{4}$/&===/')
+        padded_payload=$(echo "$payload" | sed 's/-/+/g; s/_/\//g; s/.*/&==/')
 
-        # Attempt to decode the payload and handle errors
+        # Attempt to decode the payload
         decoded_payload=$(echo "$padded_payload" | base64 --decode 2>/dev/null || echo "Decode error")
-        
+
+        # Check if the decoding was successful and validate JSON format
         if [ "$decoded_payload" = "Decode error" ]; then
           echo "Failed to decode the OIDC token payload"
+          exit 1
+        elif ! echo "$decoded_payload" | jq empty 2>/dev/null; then
+          echo "Decoded payload is not valid JSON:"
+          echo "$decoded_payload"
           exit 1
         else
           echo "Decoded OIDC Claims:"
