@@ -54,8 +54,19 @@ jobs:
 
         echo "::add-mask::$OIDC_TOKEN"
 
-        payload=$(echo "$OIDC_TOKEN" | cut -d '.' -f2 | tr -d '\n' | base64 --decode 2>/dev/null)
+        payload=$(echo "$OIDC_TOKEN" | cut -d '.' -f2)
 
-        echo "Decoded OIDC Claims:"
-        echo "$payload" | jq .
+        # Ensure correct padding for base64 decoding
+        padded_payload=$(echo "$payload" | sed -E 's/(-|_)+/+/g; s/_/\//g; s/.{4}$/&===/')
+
+        # Attempt to decode the payload and handle errors
+        decoded_payload=$(echo "$padded_payload" | base64 --decode 2>/dev/null || echo "Decode error")
+        
+        if [ "$decoded_payload" = "Decode error" ]; then
+          echo "Failed to decode the OIDC token payload"
+          exit 1
+        else
+          echo "Decoded OIDC Claims:"
+          echo "$decoded_payload" | jq .
+        fi
 
