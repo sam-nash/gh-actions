@@ -20,31 +20,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Get OIDC Token
-      id: oidc-token
-      run: |
-        # Request the OIDC token
-        OIDC_TOKEN=$(curl -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-        "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r .value)
-
-        echo "OIDC Token: $OIDC_TOKEN"
-
-        # Function to handle URL-safe base64 and padding
-        urlsafe_base64_decode() {
-          local base64_input=$1
-          # Replace URL-safe characters with standard base64 characters
-          local base64_input_standard=$(echo "$base64_input" | sed 's/-/+/g; s/_/\//g')
-          # Add padding if necessary
-          local remainder=$((${#base64_input_standard} % 4))
-          if [ "$remainder" -eq 2 ]; then
-              base64_input_standard="${base64_input_standard}=="
-          elif [ "$remainder" -eq 3 ]; then
-              base64_input_standard="${base64_input_standard}="
-          fi
-
-          echo "$base64_input_standard" | base64 --decode 2>/dev/null
-        }
-
     - name: Get OIDC Token and Decode Claims
       id: oidc-claims
       run: |
@@ -57,22 +32,22 @@ jobs:
 
         payload=$(echo "$OIDC_TOKEN" | cut -d '.' -f2)
 
-        # Ensure correct padding for base64 decoding
-        padded_payload=$(echo "$payload" | sed 's/-/+/g; s/_/\//g; s/.*/&==/')
+         # Check and apply padding for base64 decoding
+        case $(( ${#payload} % 4 )) in
+          2) padded_payload="${payload}==" ;;
+          3) padded_payload="${payload}=" ;;
+          *) padded_payload="$payload" ;;
+        esac
 
         # Attempt to decode the payload
-        decoded_payload=$(echo "$padded_payload" | base64 --decode 2>/dev/null || echo "Decode error")
+        decoded_payload=$(echo "$padded_payload" | base64 --decode 2>/dev/null)
 
-        # Check if the decoding was successful and validate JSON format
-        if [ "$decoded_payload" = "Decode error" ]; then
-          echo "Failed to decode the OIDC token payload"
-          exit 1
-        elif ! echo "$decoded_payload" | jq empty 2>/dev/null; then
-          echo "Decoded payload is not valid JSON:"
-          echo "$decoded_payload"
-          exit 1
-        else
+        # Validate if the decoded payload is JSON
+        if echo "$decoded_payload" | jq empty 2>/dev/null; then
           echo "Decoded OIDC Claims:"
           echo "$decoded_payload" | jq .
+        else
+          echo "Failed to decode the OIDC token payload or the result is not valid JSON"
+          exit 1
         fi
 
