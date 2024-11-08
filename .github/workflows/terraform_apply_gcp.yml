@@ -40,9 +40,9 @@ jobs:
         with:
           version: '>= 363.0.0'
 
-      - name: set credentials file
-        run: >-
-          gcloud auth login --cred-file=${{steps.authenticate.outputs.credentials_file_path}}
+      # - name: set credentials file
+      #   run: >-
+      #     gcloud auth login --cred-file=${{steps.authenticate.outputs.credentials_file_path}}
 
       # - name: Set up Terraform
       #   uses: hashicorp/setup-terraform@v1
