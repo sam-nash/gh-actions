@@ -20,7 +20,13 @@ jobs:
       contents: read
       id-token: write
 
+
     steps:
+      - name: List installed softwares on the runner
+        run: |
+          echo "Listing installed software packages:"
+          dpkg --list
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -62,33 +68,33 @@ jobs:
 
       # # Ensure the environment variable is set correctly
       # - name: Set Environment Variable
-      #   run: echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_ENV
+      #   run: echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_OUTPUT
 
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.0
+      # - name: Set up Terraform
+      #   uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     terraform_version: 1.0.0
 
-      # - name: Terraform Init
-      #   id: init
-      #   run: terraform init
-      #   working-directory: terraform
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: terraform
 
-      # - name: Terraform Format
-      #   id: fmt
-      #   run: terraform fmt
-      #   working-directory: terraform
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt
+        working-directory: terraform
 
-      # - name: Terraform Validate
-      #   id: validate
-      #   run: terraform validate
-      #   working-directory: terraform
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+        working-directory: terraform
 
-      # - name: Terraform Plan
-      #   id: plan
-      #   run: terraform plan -out=tfplan
-      #   working-directory: terraform
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out=tfplan
+        working-directory: terraform
 
       # - name: Terraform Apply
       #   id: apply
