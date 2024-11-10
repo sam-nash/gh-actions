@@ -100,11 +100,13 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action == 'opened'
         run: |
           PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
+          echo "PLAN_OUTPUT: $PLAN_OUTPUT"
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
-            https://api.github.com/repos/sam-nash/google-cloud/issues/${{ github.event.client_payload.pr_number }}/comments
+            https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.client_payload.pr_number }}/comments
+
 
 
 
