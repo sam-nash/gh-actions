@@ -25,13 +25,22 @@ Step 2: Go to your GitHub repository settings, and add the following secrets in 
 
 - `GCP_PROJECT_ID`: Your Google Cloud project ID.
 - `GCP_SERVICE_ACCOUNT`: The email of your Google Cloud service account.
-- `GCP_WORKLOAD_IDENTITY_PROVIDER`: The URI of the WIF retrived in the prveious step.
+- `GCP_WORKLOAD_IDENTITY_PROVIDER`: The URI of the WIF retrieved in the previous step.
 
 Refer to the [screenshot] (GH_Variables.png)
 
+Step 3 : Give the service account relevant permissions to access the target project
+This must be run by an owner of the project
+
+```sh
+  gcloud projects add-iam-policy-binding sam-nash \
+    --member="serviceAccount:ghactions-sa@gh-actions-1506.iam.gserviceaccount.com" \
+    --role="roles/editor"
+  ```
+
 ### gcp docker runner
 
-Give the relevant permissiosn to the service account
+Give the relevant permissions to the service account
 
 ```sh
 gcloud projects add-iam-policy-binding gh-actions-1506 \

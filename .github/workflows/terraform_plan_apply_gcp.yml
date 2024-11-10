@@ -60,6 +60,10 @@ jobs:
           # set target GCP project
           gcloud config set project ${{ github.event.client_payload.gcp_project }}
 
+      # Ensure the environment variable is set correctly
+      - name: Set Environment Variable
+        run: echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_ENV
+
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
