@@ -2,13 +2,11 @@ name: Terraform CI/CD
 
 on:
   workflow_dispatch:
-  repository_dispatch:
-    types: [terraform_apply]
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/terraform_apply_gcp.yml'
+      - '.github/workflows/gcp_gharunner.yml'
 
 jobs:
   terraform:
