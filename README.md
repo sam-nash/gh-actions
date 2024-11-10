@@ -38,6 +38,20 @@ This must be run by an owner of the project
     --role="roles/editor"
   ```
 
+In this target workflow:
+
+The on: repository_dispatch event listens for terraform_plan and terraform_apply events.
+The Checkout code step checks out the repository code.
+The Authenticate to Google Cloud step uses the google-github-actions/auth@v2 action to authenticate to Google Cloud.
+The Set up Google Cloud SDK step sets up the Google Cloud SDK.
+The Set GCP Project step sets the target GCP project using the project_name from the client_payload.
+The Set up Terraform step sets up Terraform using the hashicorp/setup-terraform@v1 action.
+The Terraform Init step initializes Terraform with the backend configuration dynamically set based on the project name.
+The Terraform Plan step runs the terraform plan command if the event action is terraform_plan.
+The Post Plan Comment step posts the Terraform plan output as a comment on the pull request if the event action is terraform_plan.
+The Terraform Apply step runs the terraform apply command if the event action is terraform_apply.
+This workflow handles both the terraform_plan and terraform_apply events, performing the appropriate Terraform actions based on the event type and the payload received.
+
 ### gcp docker runner
 
 Give the relevant permissions to the service account

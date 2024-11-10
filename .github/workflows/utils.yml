@@ -1,0 +1,16 @@
+# Some example steps 
+name: GHA utils
+
+on:
+  workflow_dispatch:
+
+jobs:
+  utils:
+    runs-on: ubuntu-latest
+
+    steps:
+    # this step lists the softwares installed on a runner
+      - name: List installed softwares on the runner
+        run: |
+          echo "Listing installed software packages:"
+          dpkg --list
