@@ -92,12 +92,12 @@ jobs:
           fi
 
       - name: Terraform Show
-        if: github.event.action == 'terraform_plan'
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
         run: terraform show -json tfplan > tfplan.json
         working-directory: terraform
 
       - name: Post Plan Comment
-        if: github.event.action == 'terraform_plan'
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
         run: |
           PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
           curl -X POST \
