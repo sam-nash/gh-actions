@@ -1,0 +1,88 @@
+# Workflow to plan and apply Terraform changes to GCP
+# Triggered by a push to the main branch or a repository dispatch event from anotther repository
+name: Terraform CI/CD
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [terraform_apply]
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - '.github/workflows/terraform_plan_apply_gcp.yml'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.event.client_payload.repository }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Authenticate to Google Cloud
+        id: authenticate
+        uses: google-github-actions/auth@v2
+        with:
+          create_credentials_file: true
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      # Run a gcloud command to test authentication
+      - name: List Google Cloud Projects
+        run: |
+          gcloud projects list
+
+      # The Google Cloud SDK is used to generate an access token when authenticating with Artifact Registry. 
+      # Make sure that it is installed and initialised with Application Default Credentials before proceeding.
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
+
+      # - name: set credentials file
+      #   run: >-
+      #     gcloud auth login --cred-file=${{steps.authenticate.outputs.credentials_file_path}}
+
+      # Tsrget GCP project to apply Terraform plan
+      - name: Set GCP Project
+        run: echo "GOOGLE_CLOUD_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_ENV
+
+
+
+      # - name: Set up Terraform
+      #   uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     terraform_version: 1.0.0
+
+      # - name: Terraform Init
+      #   id: init
+      #   run: terraform init
+      #   working-directory: terraform
+
+      # - name: Terraform Format
+      #   id: fmt
+      #   run: terraform fmt
+      #   working-directory: terraform
+
+      # - name: Terraform Validate
+      #   id: validate
+      #   run: terraform validate
+      #   working-directory: terraform
+
+      # - name: Terraform Plan
+      #   id: plan
+      #   run: terraform plan -out=tfplan
+      #   working-directory: terraform
+
+      # - name: Terraform Apply
+      #   id: apply
+      #   run: terraform apply -auto-approve tfplan
+      #   working-directory: terraform
