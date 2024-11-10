@@ -1,4 +1,4 @@
-name: Terraform CI/CD
+name: GCP GHA Runner
 
 on:
   workflow_dispatch:
