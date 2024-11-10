@@ -107,11 +107,8 @@ jobs:
             -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
             https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.client_payload.pr_number }}/comments
 
-
-
-
       - name: Terraform Apply
-        if: github.event.action == 'terraform_apply'
+        if: github.event.action == 'terraform_apply' && 
         id: apply
         run: terraform apply -auto-approve tfplan
         working-directory: terraform
