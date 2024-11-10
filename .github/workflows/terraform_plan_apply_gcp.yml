@@ -57,13 +57,14 @@ jobs:
           echo "TARGET_GCP_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_OUTPUT
           echo "The Target GCP Project is: ${{ github.event.client_payload.gcp_project }}"
           echo $TARGET_GCP_PROJECT
+          # set target GCP project
+          gcloud config set project ${{ github.event.client_payload.gcp_project }}
 
 
-
-      # - name: Set up Terraform
-      #   uses: hashicorp/setup-terraform@v1
-      #   with:
-      #     terraform_version: 1.0.0
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
 
       # - name: Terraform Init
       #   id: init
