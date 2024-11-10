@@ -58,13 +58,14 @@ jobs:
       #     gcloud auth login --cred-file=${{steps.authenticate.outputs.credentials_file_path}}
 
       # Target GCP project to apply Terraform plan
-      # - name: Set GCP Project
-      #   run: |
-      #     echo "TARGET_GCP_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_OUTPUT
-      #     echo "The Target GCP Project is: ${{ github.event.client_payload.gcp_project }}"
-      #     echo $TARGET_GCP_PROJECT
-      #     # set target GCP project
-      #     gcloud config set project ${{ github.event.client_payload.gcp_project }}
+      - name: Set GCP Project
+        run: |
+          echo "TARGET_GCP_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_OUTPUT
+          echo "The Target GCP Project is: ${{ github.event.client_payload.gcp_project }}"
+          echo $TARGET_GCP_PROJECT
+          # set target GCP project
+          echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_OUTPUT
+          gcloud config set project ${{ github.event.client_payload.gcp_project }}
 
       # # Ensure the environment variable is set correctly
       # - name: Set Environment Variable
