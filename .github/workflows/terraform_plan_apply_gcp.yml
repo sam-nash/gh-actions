@@ -53,7 +53,10 @@ jobs:
 
       # Tsrget GCP project to apply Terraform plan
       - name: Set GCP Project
-        run: echo "GOOGLE_CLOUD_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_ENV
+        run: |
+          echo "GOOGLE_CLOUD_PROJECT=${{ github.event.client_payload.gcp_project }}" >> $GITHUB_ENV
+          echo "The Target GCP Project is: ${{ github.event.client_payload.gcp_project }}"
+          echo $GOOGLE_CLOUD_PROJECT
 
 
 
