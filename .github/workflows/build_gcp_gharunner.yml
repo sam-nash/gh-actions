@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/build_gcp_ghrunner.yml'
+      - '.github/workflows/build_gcp_gharunner.yml'
       - 'Dockerfile.ghrunner'
       - 'entrypoint2.sh'
       - 'runsvc2.sh'
@@ -13,7 +13,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/build_gcp_ghrunner.yml'
+      - '.github/workflows/build_gcp_gharunner.yml'
       - 'Dockerfile.ghrunner'
       - 'entrypoint2.sh'
       - 'runsvc2.sh'
