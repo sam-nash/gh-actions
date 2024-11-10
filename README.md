@@ -38,6 +38,27 @@ This must be run by an owner of the project
     --role="roles/editor"
   ```
 
+Step 4 : Create the GCS bucket and grant the service account permissions to write to the bucket
+
+```sh
+  # Set the project ID
+  PROJECT_ID="sam-nash"
+
+  # Set the bucket name
+  BUCKET_NAME="${PROJECT_ID}-tfstate"
+
+  # Set the service account email
+  SERVICE_ACCOUNT_EMAIL="ghactions-sa@gh-actions-1506.iam.gserviceaccount.com"
+
+  # Create the GCS bucket
+  gsutil mb -p $PROJECT_ID gs://$BUCKET_NAME
+
+  # Grant the roles/storage.admin role to the service account
+  gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/storage.admin"
+    ```
+
 In this target workflow:
 
 The on: repository_dispatch event listens for terraform_plan and terraform_apply events.

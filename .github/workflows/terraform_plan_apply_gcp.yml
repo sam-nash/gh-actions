@@ -51,10 +51,9 @@ jobs:
         run: |
           echo "TARGET_GCP_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
           echo "The Target GCP Project is: ${{ github.event.client_payload.project_name }}"
-          echo $TARGET_GCP_PROJECT
-          # set target GCP project
           echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
           gcloud config set project ${{ github.event.client_payload.project_name }}
+
 
       # - name: Set up Terraform
       #   uses: hashicorp/setup-terraform@v1
@@ -82,15 +81,26 @@ jobs:
         run: terraform plan -var-file="${{ github.event.client_payload.project_name }}.tfvars" -out=tfplan
         working-directory: terraform
 
+      - name: Check if tfplan file exists
+        if: github.event.action == 'terraform_plan'
+        run: |
+          if [ -f terraform/tfplan ]; then
+            echo "tfplan file exists."
+          else
+            echo "tfplan file does not exist."
+            exit 1
+          fi
+
       - name: Post Plan Comment
         if: github.event.action == 'terraform_plan'
         run: |
-          PLAN_OUTPUT=$(terraform show -json tfplan | jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address')
+          PLAN_OUTPUT=$(terraform show -json terraform/tfplan | jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address')
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
             https://api.github.com/repos/sam-nash/google-cloud/issues/${{ github.event.client_payload.pr_number }}/comments
+
 
       - name: Terraform Apply
         if: github.event.action == 'terraform_apply'
