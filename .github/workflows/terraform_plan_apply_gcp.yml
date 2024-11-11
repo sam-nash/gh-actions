@@ -94,20 +94,32 @@ jobs:
       - name: Terraform Show
         id: tf_show
         if: ${{ github.event.client_payload.pr_event }} == 'opened'
-        run: terraform show -json tfplan > tfplan.json
+        run: |
+          terraform show -json tfplan > tfplan.json
+          PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
+          echo "PLAN_OUTPUT: $PLAN_OUTPUT" >> $GITHUB_ENV
         working-directory: terraform
 
       # Post Terraform Plan as a comment on the PR
       - name: Post Plan as PR Comment
+        uses: actions/github-script@v6
         if: ${{ steps.tf_show.outcome }} == 'success'
-        run: |
-          PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
-          echo "PLAN_OUTPUT: $PLAN_OUTPUT"
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
-            https://api.github.com/repos/${{ github.event.client_payload.repository }}/pulls/${{ github.event.client_payload.pr_number }}/comments
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: ${{ github.event.client_payload.pr_number }},
+              owner: context.repo.owner,
+              repo: ${{ github.event.client_payload.repository }},
+              body: '\"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}"'
+            })
+        # run: |
+        #   PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
+        #   echo "PLAN_OUTPUT: $PLAN_OUTPUT"
+        #   curl -X POST \
+        #     -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        #     -H "Content-Type: application/json" \
+        #     -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
+        #     https://api.github.com/repos/${{ github.event.client_payload.repository }}/pulls/${{ github.event.client_payload.pr_number }}/comments
 
       - name : Check 
         run: |
