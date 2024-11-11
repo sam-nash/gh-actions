@@ -11,10 +11,11 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    permissions: write-all
-      # contents: read
-      # id-token: write
-      # pull-requests: write
+    permissions: 
+      contents: read
+      id-token: write
+      pull-requests: write
+      repository-projects: write
 
     steps:
       - name: Checkout code
