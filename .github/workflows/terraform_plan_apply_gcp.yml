@@ -105,7 +105,7 @@ jobs:
           PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
           echo "PLAN_OUTPUT=$PLAN_OUTPUT" >> $GITHUB_ENV
           curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.GH_PAT}}" \
             -H "Accept: application/vnd.github+json" \
             -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
             https://api.github.com/repos/${{ github.event.client_payload.repository }}/pulls/${{ github.event.client_payload.pr_number }}/comments
