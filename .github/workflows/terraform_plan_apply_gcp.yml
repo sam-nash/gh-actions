@@ -96,8 +96,9 @@ jobs:
         run: terraform show -json tfplan > tfplan.json
         working-directory: terraform
 
-      - name: Post Plan Comment
-        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+      # Post Terraform Plan as a comment on the PR
+      - name: Post Plan as PR Comment
+        if: ${{ github.event.client_payload.pr_event }} == 'opened'
         run: |
           PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
           echo "PLAN_OUTPUT: $PLAN_OUTPUT"
@@ -108,7 +109,7 @@ jobs:
             https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.client_payload.pr_number }}/comments
 
       - name: Terraform Apply
-        if: github.event.action == 'terraform_apply' && github.event.pull_request.merged == true
+        if: ${{ github.event.client_payload.pr_event }} == 'closed' && ${{ github.event.client_payload.pr_merged}} == true
         id: apply
         run: terraform apply -auto-approve tfplan
         working-directory: terraform
