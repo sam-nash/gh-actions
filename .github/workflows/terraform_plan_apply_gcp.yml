@@ -76,7 +76,6 @@ jobs:
         working-directory: terraform
 
       - name: Terraform Plan
-        if: github.event.action == 'terraform_plan'
         id: plan
         run: terraform plan -var-file="${{ github.event.client_payload.project_name }}.tfvars" -out=tfplan
         working-directory: terraform
@@ -92,13 +91,14 @@ jobs:
           fi
 
       - name: Terraform Show
-        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        id: tf_show
+        if: ${{ github.event.client_payload.pr_event }} == 'opened'
         run: terraform show -json tfplan > tfplan.json
         working-directory: terraform
 
       # Post Terraform Plan as a comment on the PR
       - name: Post Plan as PR Comment
-        if: ${{ github.event.client_payload.pr_event }} == 'opened'
+        if: ${{ steps.tf_show.outcome }} == 'success'
         run: |
           PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
           echo "PLAN_OUTPUT: $PLAN_OUTPUT"
