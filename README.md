@@ -73,6 +73,16 @@ The Post Plan Comment step posts the Terraform plan output as a comment on the p
 The Terraform Apply step runs the terraform apply command if the event action is terraform_apply.
 This workflow handles both the terraform_plan and terraform_apply events, performing the appropriate Terraform actions based on the event type and the payload received.
 
+https://github.com/sam-nash/google_cloud/settings/actions
+
+Workflow permissions
+Choose the default permissions granted to the GITHUB_TOKEN when running workflows in this repository. You can specify more granular permissions in the workflow using YAML. Learn more about managing permissions.
+
+
+
+Read and write permissions
+Workflows have read and write permissions in the repository for all scopes.
+
 ### gcp docker runner
 
 Give the relevant permissions to the service account

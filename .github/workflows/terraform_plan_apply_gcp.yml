@@ -11,10 +11,10 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      id-token: write
-      pull-requests: write
+    permissions: write-all
+      # contents: read
+      # id-token: write
+      # pull-requests: write
 
     steps:
       - name: Checkout code
@@ -103,26 +103,11 @@ jobs:
         run: |
           PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
           echo "PLAN_OUTPUT=$PLAN_OUTPUT" >> $GITHUB_ENV
-        # curl -X POST \
-        #   -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-        #   -H "Content-Type: application/json" \
-        #   -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
-        #   https://api.github.com/repos/${{ github.event.client_payload.repository }}/pulls/${{ github.event.client_payload.pr_number }}/comments
-
-      # Post PLAN_OUTPUT as a comment on the PR using github script
-      - name: Post Plan as PR Comment
-        if: ${{ steps.tf_show.outcome }} == 'success'
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const planOutput = process.env.PLAN_OUTPUT;
-            github.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `Terraform Plan Output:\n\`\`\`\n${planOutput}\n\`\`\``
-            });
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
+            https://api.github.com/repos/${{ github.event.client_payload.repository }}/pulls/${{ github.event.client_payload.pr_number }}/comments
 
       - name : Check 
         run: |
