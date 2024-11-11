@@ -102,7 +102,8 @@ jobs:
       - name: Post Plan as PR Comment
         if: ${{ steps.tf_show.outcome }} == 'success'
         run: |
-          PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
+          PLAN_OUTPUT=$(jq -r '.' < terraform/tfplan.json)
+          echo $PLAN_OUTPUT
           echo "PLAN_OUTPUT=$PLAN_OUTPUT" >> $GITHUB_ENV
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.GH_PAT}}" \
