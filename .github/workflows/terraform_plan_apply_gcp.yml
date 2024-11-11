@@ -116,12 +116,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const planOutput = process.env.PLAN_OUTPUT;
             github.issues.createComment({
-              issue_number: {{ github.event.client_payload.pr_number }},
-              owner: sam-nash,
-              repo: google_cloud,
-              body: 'Terraform Plan Output:\n\`\`\`\n${{ env.PLAN_OUTPUT }}\n\`\`\`'
-            })
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Terraform Plan Output:\n\`\`\`\n${planOutput}\n\`\`\``
+            });
 
       - name : Check 
         run: |
