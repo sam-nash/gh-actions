@@ -96,6 +96,11 @@ jobs:
         if: ${{ github.event.client_payload.pr_event }} == 'opened'
         run: |
           terraform show -json tfplan > tfplan.json
+        working-directory: terraform
+
+      - name: Extract Plan Output
+        if: ${{ steps.tf_show.outcome }} == 'success'
+        run: |
           PLAN_OUTPUT=$(jq -r '.resource_changes[] | select(.change.actions | index("create") or index("update") or index("delete")) | .address' < terraform/tfplan.json)
           echo "PLAN_OUTPUT: $PLAN_OUTPUT" >> $GITHUB_ENV
         working-directory: terraform
