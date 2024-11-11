@@ -107,8 +107,13 @@ jobs:
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d "{\"body\": \"Terraform Plan Output:\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`\"}" \
-            https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.client_payload.pr_number }}/comments
+            https://api.github.com/repos/${{ github.event.client_payload.repository }}/pulls/${{ github.event.client_payload.pr_number }}/comments
 
+      - name : Check 
+        run: |
+          echo "The pr_event is: ${{ github.event.client_payload.pr_event }}"
+          echo "The pr_merged is: ${{ github.event.client_payload.pr_merged }}"
+          
       - name: Terraform Apply
         if: ${{ github.event.client_payload.pr_event }} == 'closed' && ${{ github.event.client_payload.pull_request.merged }} == true
         id: apply
