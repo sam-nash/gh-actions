@@ -136,8 +136,8 @@ jobs:
             // 1. Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
+              repo: ${{ github.event.client_payload.repository }},
+              issue_number: ${{ github.event.client_payload.pr_number }},
             })
             const botComment = comments.find(comment => {
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
@@ -171,16 +171,16 @@ jobs:
             if (botComment) {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
-                repo: context.repo.repo,
+                repo: ${{ github.event.client_payload.repository }},
                 comment_id: botComment.id,
                 body: output
               })
             } 
             else {
               github.rest.issues.createComment({
-                issue_number: context.issue.number,
+                issue_number: ${{ github.event.client_payload.pr_number }},
                 owner: context.repo.owner,
-                repo: context.repo.repo,
+                repo: ${{ github.event.client_payload.repository }},
                 body: output
               })
             }
