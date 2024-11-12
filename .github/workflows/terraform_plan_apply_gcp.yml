@@ -10,6 +10,11 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      tf_actions_working_dir: './terraform'
+    defaults:
+      run:
+        working-directory: ${{ env.tf_actions_working_dir }}
 
     permissions: 
       contents: read
@@ -23,6 +28,9 @@ jobs:
         with:
           repository: ${{ github.event.client_payload.repository }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
 
       - name: Authenticate to Google Cloud
         id: authenticate
@@ -56,7 +64,6 @@ jobs:
           echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
           gcloud config set project ${{ github.event.client_payload.project_name }}
 
-
       # - name: Set up Terraform
       #   uses: hashicorp/setup-terraform@v1
       #   with:
@@ -65,31 +72,25 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init -backend-config="bucket=${{ github.event.client_payload.project_name }}-tfstate"
-        working-directory: terraform
 
       - name: Terraform Format
         id: fmt
         run: terraform fmt
-        working-directory: terraform
 
       - name: Terraform Validate
         id: validate
         run: terraform validate
-        working-directory: terraform
 
-      # - name: Terraform Plan
-      #   id: plan
-      #   run: terraform plan -var-file="${{ github.event.client_payload.project_name }}.tfvars" -out=tfplan
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -var-file="${{ github.event.client_payload.project_name }}.tfvars" -out=tfplan
       #   working-directory: terraform
 
       # Run Terraform Plan and capture the output in JSON format
-      - name: Terraform Plan
-        id: plan
-        run: |
-          terraform plan -var-file="${{ github.event.client_payload.project_name }}.tfvars" -out=tfplan.binary
-          terraform show -json tfplan.binary > tfplan.json
-        working-directory: terraform
-
+      # - name: Terraform Plan
+      #   id: plan
+      #   run: |
+      #     terraform plan -var-file="${{ github.event.client_payload.project_name }}.tfvars" 
 
       # - name: Check if tfplan file exists
       #   if: github.event.action == 'terraform_plan'
@@ -109,20 +110,80 @@ jobs:
 
 
       # Post Terraform Plan as a comment on the PR
-      - name: Post Plan as PR Comment
-        # if: ${{ steps.tf_show.outcome }} == 'success'
-        run: |
-          # Read the plan output and format it as Markdown
-          PLAN_OUTPUT=$(jq -r '.resource_changes[] | "- \(.type) \(.name): \(.change.actions | join(", "))"' tfplan.json)
-          PLAN_COMMENT="### Terraform Plan:\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
-          echo "PLAN_COMMENT=$PLAN_COMMENT" >> $GITHUB_ENV
+      # - name: Post Plan as PR Comment
+      #   # if: ${{ steps.tf_show.outcome }} == 'success'
+      #   run: |
+      #     # Read the plan output and format it as Markdown
+      #     PLAN_OUTPUT=$(jq -r '.resource_changes[] | "- \(.type) \(.name): \(.change.actions | join(", "))"' tfplan.json)
+      #     PLAN_COMMENT="### Terraform Plan:\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
+      #     echo "PLAN_COMMENT=$PLAN_COMMENT" >> $GITHUB_ENV
 
-          curl -X POST \
-            -H "Authorization: Bearer ${{ secrets.GH_PAT}}" \
-            -H "Accept: application/vnd.github+json" \
-            -d "{\"body\": \"$PLAN_COMMENT\"}" \
-            https://api.github.com/repos/${{ github.event.client_payload.repository }}/issues/${{ github.event.client_payload.pr_number }}/comments
-        working-directory: terraform
+      #     curl -X POST \
+      #       -H "Authorization: Bearer ${{ secrets.GH_PAT}}" \
+      #       -H "Accept: application/vnd.github+json" \
+      #       -d "{\"body\": \"$PLAN_COMMENT\"}" \
+      #       https://api.github.com/repos/${{ github.event.client_payload.repository }}/issues/${{ github.event.client_payload.pr_number }}/comments
+
+
+      - name: PR Comment
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // 1. Retrieve existing bot comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+            })
+
+            // 2. Prepare format of the comment
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            <details><summary>Validation Output</summary>
+
+            \`\`\`\n
+            ${{ steps.validate.outputs.stdout }}
+            \`\`\`
+
+            </details>
+
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            // 3. If we have a comment, update it, otherwise create a new one
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } 
+            else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
 
       - name : Check 
         run: |
