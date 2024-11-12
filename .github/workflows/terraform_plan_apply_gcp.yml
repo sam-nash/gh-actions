@@ -127,7 +127,7 @@ jobs:
 
       - name: PR Comment
         uses: actions/github-script@v7
-        if: github.event_name == 'pull_request'
+        if: github.event.action == 'terraform_plan'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
