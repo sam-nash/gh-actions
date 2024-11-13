@@ -28,10 +28,14 @@ jobs:
           echo "GH_PR_EVENT=${{ github.event.client_payload.pr_event }}" >> $GITHUB_ENV
           echo "GH_PR_MERGED=${{ github.event.client_payload.pr_merged }}" >> $GITHUB_ENV
 
+          # print the environment variables
+          echo "Printing all ENV vars set on the runner :"
+          printenv | sort
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          repository: ${{ github.event.client_payload.repository }}
+          repository: ${{ env.GH_REPOSITORY }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Terraform
