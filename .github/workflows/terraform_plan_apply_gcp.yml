@@ -141,7 +141,7 @@ jobs:
 
       - name: PR Comment
         uses: actions/github-script@v7
-        if: github.event.action == 'terraform_plan'
+        if: github.event.action == 'terraform_plan' && ${{ env.GH_PR_EVENT }} == 'opened'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
