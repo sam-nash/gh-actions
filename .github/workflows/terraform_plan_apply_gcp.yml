@@ -82,23 +82,23 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init -backend-config="bucket=$TARGET_GCP_PROJECT-tfstate"
-        working-directory: google_cloud/terraform
+        working-directory: terraform
         #working-directory: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform Format
         id: fmt
         run: terraform fmt
-        working-directory: google_cloud/terraform
+        working-directory: terraform
         
       - name: Terraform Validate
         id: validate
         run: terraform validate
-        working-directory: google_cloud/terraform
+        working-directory: terraform
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -var-file="$TARGET_GCP_PROJECT.tfvars" -out=tfplan
-        working-directory: google_cloud/terraform
+        working-directory: terraform
 
       # Run Terraform Plan and capture the output in JSON format
       # - name: Terraform Plan
