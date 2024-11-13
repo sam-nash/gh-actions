@@ -23,7 +23,7 @@ jobs:
           echo "TARGET_GCP_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
           echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
           echo "GH_REPOSITORY=${{ github.event.client_payload.repository }}" >> $GITHUB_ENV
-          GH_REPO_NAME=$(echo ${{ env.GH_REPOSITORY }} | cut -d'/' -f2)
+          GH_REPO_NAME=$(echo ${{ env.GH_REPOSITORY }}| cut -d'/' -f2)
           echo ${GH_REPO_NAME}
           echo "GH_REPO_NAME=$GH_REPO_NAME" >> $GITHUB_ENV
           echo "TF_WORKING_DIR=$GH_REPO_NAME/terraform" >> $GITHUB_ENV          
@@ -82,22 +82,23 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init -backend-config="bucket=$TARGET_GCP_PROJECT-tfstate"
-        working-directory: ${{ env.TF_WORKING_DIR }}
+        working-directory: google_cloud/terraform
+        #working-directory: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform Format
         id: fmt
         run: terraform fmt
-        working-directory: ${{ env.TF_WORKING_DIR }}
+        working-directory: google_cloud/terraform
         
       - name: Terraform Validate
         id: validate
         run: terraform validate
-        working-directory: ${{ env.TF_WORKING_DIR }}
+        working-directory: google_cloud/terraform
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -var-file="$TARGET_GCP_PROJECT.tfvars" -out=tfplan
-        working-directory: ${{ env.TF_WORKING_DIR }}
+        working-directory: google_cloud/terraform
 
       # Run Terraform Plan and capture the output in JSON format
       # - name: Terraform Plan
@@ -149,7 +150,7 @@ jobs:
             // 1. Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
-              repo: process.env.GH_REPO_NAME,
+              repo: "google_cloud",
               issue_number: process.env.GH_PR_NUMBER,
             })
             const botComment = comments.find(comment => {
@@ -178,13 +179,13 @@ jobs:
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ env.GH_EVENT }}\`, Working Directory: \`${{ env.TF_WORKING_DIR }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ env.GH_EVENT }}\`, Working Directory: "google_cloud/terraform", Workflow: \`${{ github.workflow }}\`*`;
 
             // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
-                repo: process.env.GH_REPO_NAME,
+                repo: "google_cloud",
                 comment_id: botComment.id,
                 body: output
               })
@@ -193,7 +194,7 @@ jobs:
               github.rest.issues.createComment({
                 issue_number: process.env.GH_PR_NUMBER,
                 owner: context.repo.owner,
-                repo: process.env.GH_REPO_NAME,
+                repo: "google_cloud",
                 body: output
               })
             }
