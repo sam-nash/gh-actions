@@ -146,8 +146,8 @@ jobs:
             // 1. Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
-              repo: `${{ env.GH_REPOSITORY }}`,
-              issue_number: `${{ env.GH_PR_NUMBER }}`,
+              repo: process.env.GH_REPOSITORY,
+              issue_number: process.env.GH_PR_NUMBER,
             })
             const botComment = comments.find(comment => {
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
@@ -181,16 +181,16 @@ jobs:
             if (botComment) {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
-                repo: ${{ env.GH_REPOSITORY }},
+                repo: process.env.GH_REPOSITORY,
                 comment_id: botComment.id,
                 body: output
               })
             } 
             else {
               github.rest.issues.createComment({
-                issue_number: ${{ env.GH_PR_NUMBER }},
+                issue_number: process.env.GH_PR_NUMBER,
                 owner: context.repo.owner,
-                repo: ${{ env.GH_REPOSITORY}},
+                repo: process.env.GH_REPOSITORY,
                 body: output
               })
             }
