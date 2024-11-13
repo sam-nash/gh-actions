@@ -23,6 +23,16 @@ jobs:
       repository-projects: write
 
     steps:
+      - name: Set ENV variables
+        run: |
+          echo "TARGET_GCP_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
+          echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
+          echo "TF_WORKING_DIR=terraform" >> $GITHUB_ENV
+          echo "GH_REPOSITORY=${{ github.event.client_payload.repository }}" >> $GITHUB_ENV
+          echo "GH_PR_NUMBER=${{ github.event.client_payload.pr_number }}" >> $GITHUB_ENV
+          echo "GH_PR_EVENT=${{ github.event.client_payload.pr_event }}" >> $GITHUB_ENV
+          echo "GH_PR_MERGED=${{ github.event.client_payload.pr_merged }}" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -59,10 +69,8 @@ jobs:
       # Target GCP project to apply Terraform plan
       - name: Set GCP Project
         run: |
-          echo "TARGET_GCP_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
-          echo "The Target GCP Project is: ${{ github.event.client_payload.project_name }}"
-          echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
-          gcloud config set project ${{ github.event.client_payload.project_name }}
+          echo "The Target GCP Project is: $TARGET_GCP_PROJECT"
+          gcloud config set project $TARGET_GCP_PROJECT
 
       # - name: Set up Terraform
       #   uses: hashicorp/setup-terraform@v1
@@ -71,20 +79,23 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config="bucket=${{ github.event.client_payload.project_name }}-tfstate"
+        run: terraform init -backend-config="bucket=$TARGET_GCP_PROJECT-tfstate"
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform Format
         id: fmt
         run: terraform fmt
-
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        
       - name: Terraform Validate
         id: validate
         run: terraform validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var-file="${{ github.event.client_payload.project_name }}.tfvars" -out=tfplan
-      #   working-directory: terraform
+        run: terraform plan -var-file="$TARGET_GCP_PROJECT.tfvars" -out=tfplan
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
       # Run Terraform Plan and capture the output in JSON format
       # - name: Terraform Plan
@@ -136,8 +147,8 @@ jobs:
             // 1. Retrieve existing bot comments for the PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
-              repo: ${{ github.event.client_payload.repository }},
-              issue_number: ${{ github.event.client_payload.pr_number }},
+              repo: `${{ env.GH_REPOSITORY }}`,
+              issue_number: `${{ env.GH_PR_NUMBER }}`,
             })
             const botComment = comments.find(comment => {
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
@@ -165,33 +176,34 @@ jobs:
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ env.GH_EVENT }}\`, Working Directory: \`${{ env.TF_WORKING_DIR }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
             // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
-                repo: ${{ github.event.client_payload.repository }},
+                repo: ${{ env.GH_REPOSITORY }},
                 comment_id: botComment.id,
                 body: output
               })
             } 
             else {
               github.rest.issues.createComment({
-                issue_number: ${{ github.event.client_payload.pr_number }},
+                issue_number: ${{ env.GH_PR_NUMBER }},
                 owner: context.repo.owner,
-                repo: ${{ github.event.client_payload.repository }},
+                repo: ${{ env.GH_REPOSITORY}},
                 body: output
               })
             }
+        
 
       - name : Check 
         run: |
-          echo "The pr_event is: ${{ github.event.client_payload.pr_event }}"
-          echo "The pr_merged is: ${{ github.event.client_payload.pr_merged }}"
+          echo "The pr_event is: ${{ env.GH_PR_EVENT }}"
+          echo "The pr_merged is: ${{ env.GH_PR_MERGED }}"
 
       # - name: Terraform Apply
-      #   if: ${{ github.event.client_payload.pr_event }} == 'closed' && ${{ github.event.client_payload.pull_request.merged }} == true
+      #   if: ${{ env.GH_PR_EVENT }} == 'closed' && ${{ env.GH_PR_MERGED }} == true
       #   id: apply
       #   run: terraform apply -auto-approve tfplan
       #   working-directory: terraform
