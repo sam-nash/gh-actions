@@ -14,3 +14,12 @@ jobs:
         run: |
           echo "Listing installed software packages:"
           dpkg --list
+
+    # this step prints the env variables set on the runner
+      - name: Print ENVIRONMENT Variables
+        run: |
+          echo "Printing all ENV vars using printenv:"
+          printenv | sort
+
+          echo "Printing all ENV vars using env:"
+          env | sort          
