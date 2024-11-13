@@ -205,8 +205,8 @@ jobs:
           echo "The pr_event is: ${{ env.GH_PR_EVENT }}"
           echo "The pr_merged is: ${{ env.GH_PR_MERGED }}"
 
-      # - name: Terraform Apply
-      #   if: ${{ env.GH_PR_EVENT }} == 'closed' && ${{ env.GH_PR_MERGED }} == true
-      #   id: apply
-      #   run: terraform apply -auto-approve tfplan
-      #   working-directory: terraform
+      - name: Terraform Apply
+        if: ${{ env.GH_PR_EVENT }} == 'closed' && ${{ env.GH_PR_MERGED }} == true
+        id: apply
+        run: terraform apply -auto-approve tfplan
+        working-directory: terraform
