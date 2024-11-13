@@ -23,8 +23,8 @@ jobs:
           echo "TARGET_GCP_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
           echo "CLOUDSDK_CORE_PROJECT=${{ github.event.client_payload.project_name }}" >> $GITHUB_ENV
           echo "GH_REPOSITORY=${{ github.event.client_payload.repository }}" >> $GITHUB_ENV
-          GH_REPO_NAME=$(echo $GH_REPOSITORY | cut -d'/' -f2)
-          echo $GH_REPO_NAME
+          GH_REPO_NAME=$(echo ${{ env.GH_REPOSITORY }} | cut -d'/' -f2)
+          echo ${GH_REPO_NAME}
           echo "GH_REPO_NAME=$GH_REPO_NAME" >> $GITHUB_ENV
           echo "TF_WORKING_DIR=$GH_REPO_NAME/terraform" >> $GITHUB_ENV          
           echo "GH_PR_NUMBER=${{ github.event.client_payload.pr_number }}" >> $GITHUB_ENV
