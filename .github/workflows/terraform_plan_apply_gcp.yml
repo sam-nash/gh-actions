@@ -101,6 +101,7 @@ jobs:
       - run: terraform show -no-color tfplan
         id: show
         working-directory: ${{ env.TF_WORKING_DIR }}
+        
 
       - name: PR Comment
         uses: actions/github-script@v7
@@ -142,7 +143,7 @@ jobs:
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ env.GH_EVENT }}\`, Working Directory: "google_cloud/terraform", Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ env.GH_PR_EVENT }}\`, Working Directory: \`${{ env.GH_REPO_NAME}}\`, Workflow: \`${{ github.workflow }}\`*`;
 
             // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
