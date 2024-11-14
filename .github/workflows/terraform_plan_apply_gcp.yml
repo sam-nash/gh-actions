@@ -25,7 +25,7 @@ jobs:
           echo "GH_REPOSITORY=${{ github.event.client_payload.repository }}" >> $GITHUB_ENV
           GH_REPO_NAME=$(echo "${{ github.event.client_payload.repository }}" | cut -d'/' -f2)
           echo "GH_REPO_NAME=${GH_REPO_NAME}" >> $GITHUB_ENV
-          echo "TF_WORKING_DIR=${GH_REPO_NAME}/terraform" >> $GITHUB_ENV         
+          echo "TF_WORKING_DIR=terraform" >> $GITHUB_ENV         
           echo "GH_PR_NUMBER=${{ github.event.client_payload.pr_number }}" >> $GITHUB_ENV
           echo "GH_PR_EVENT=${{ github.event.client_payload.pr_event }}" >> $GITHUB_ENV
           echo "GH_PR_MERGED=${{ github.event.client_payload.pr_merged }}" >> $GITHUB_ENV
@@ -81,23 +81,23 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init -backend-config="bucket=$TARGET_GCP_PROJECT-tfstate"
-        working-directory: terraform
-        #working-directory: ${{ env.TF_WORKING_DIR }}
+        # working-directory: terraform
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform Format
         id: fmt
         run: terraform fmt
-        working-directory: terraform
+        working-directory: ${{ env.TF_WORKING_DIR }}
         
       - name: Terraform Validate
         id: validate
         run: terraform validate
-        working-directory: terraform
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -var-file="$TARGET_GCP_PROJECT.tfvars" -out=tfplan
-        working-directory: terraform
+        working-directory: ${{ env.TF_WORKING_DIR }}
 
       # Run Terraform Plan and capture the output in JSON format
       # - name: Terraform Plan
