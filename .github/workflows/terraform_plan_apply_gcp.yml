@@ -99,45 +99,6 @@ jobs:
         run: terraform plan -var-file="$TARGET_GCP_PROJECT.tfvars" -out=tfplan
         working-directory: ${{ env.TF_WORKING_DIR }}
 
-      # Run Terraform Plan and capture the output in JSON format
-      # - name: Terraform Plan
-      #   id: plan
-      #   run: |
-      #     terraform plan -var-file="${{ github.event.client_payload.project_name }}.tfvars" 
-
-      # - name: Check if tfplan file exists
-      #   if: github.event.action == 'terraform_plan'
-      #   run: |
-      #     if [ -f terraform/tfplan ]; then
-      #       echo "tfplan file exists."
-      #     else
-      #       echo "tfplan file does not exist."
-      #       exit 1
-      #     fi
-
-      # - name: Terraform Show
-      #   id: tf_show
-      #   if: ${{ github.event.client_payload.pr_event }} == 'opened'
-      #   run: terraform show -json tfplan > tfplan.json
-      #   working-directory: terraform
-
-
-      # Post Terraform Plan as a comment on the PR
-      # - name: Post Plan as PR Comment
-      #   # if: ${{ steps.tf_show.outcome }} == 'success'
-      #   run: |
-      #     # Read the plan output and format it as Markdown
-      #     PLAN_OUTPUT=$(jq -r '.resource_changes[] | "- \(.type) \(.name): \(.change.actions | join(", "))"' tfplan.json)
-      #     PLAN_COMMENT="### Terraform Plan:\n\n\`\`\`\n$PLAN_OUTPUT\n\`\`\`"
-      #     echo "PLAN_COMMENT=$PLAN_COMMENT" >> $GITHUB_ENV
-
-      #     curl -X POST \
-      #       -H "Authorization: Bearer ${{ secrets.GH_PAT}}" \
-      #       -H "Accept: application/vnd.github+json" \
-      #       -d "{\"body\": \"$PLAN_COMMENT\"}" \
-      #       https://api.github.com/repos/${{ github.event.client_payload.repository }}/issues/${{ github.event.client_payload.pr_number }}/comments
-
-
       - name: PR Comment
         uses: actions/github-script@v7
         if: github.event.action == 'terraform_plan' && env.GH_PR_EVENT == 'opened'
@@ -172,7 +133,7 @@ jobs:
 
             <details><summary>Show Plan</summary>
 
-            \`\`\`\n
+            \`\`\`
             ${process.env.PLAN}
             \`\`\`
 
