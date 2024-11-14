@@ -207,7 +207,7 @@ jobs:
           echo "The pr_merged is: ${{ env.GH_PR_MERGED }}"
 
       - name: Terraform Apply
-        if: ${{ env.GH_PR_MERGED }} == true
+        if: github.event.action == 'terraform_apply'
         id: apply
         run: terraform apply -auto-approve tfplan
         working-directory: terraform
