@@ -1,4 +1,4 @@
-# gh-actions
+# Github Actions
 
 ## GH Action Workflows on Google Cloud
 
