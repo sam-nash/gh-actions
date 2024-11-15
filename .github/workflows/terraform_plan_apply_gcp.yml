@@ -102,7 +102,6 @@ jobs:
         id: show
         working-directory: ${{ env.TF_WORKING_DIR }}
         
-
       - name: PR Comment
         uses: actions/github-script@v7
         if: github.event.action == 'terraform_plan' && ( env.GH_PR_EVENT == 'opened' || env.GH_PR_EVENT == 'synchronize' )
@@ -163,13 +162,6 @@ jobs:
               })
             }
         
-
-      - name : Check 
-        run: |
-          echo echo "The Repository is: ${{ env.GH_REPO_NAME }}"
-          echo "The pr_event is: ${{ env.GH_PR_EVENT }}"
-          echo "The pr_merged is: ${{ env.GH_PR_MERGED }}"
-
       - name: Terraform Apply
         if: github.event.action == 'terraform_apply'
         id: apply
