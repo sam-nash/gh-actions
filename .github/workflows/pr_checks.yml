@@ -9,7 +9,7 @@ on:
 
 jobs:
   check-up-to-date:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout feature branch
@@ -22,9 +22,9 @@ jobs:
 
     - name: Check if feature branch is up to date with develop
       run: |
-        git merge-base --is-ancestor origin/develop %GITHUB_HEAD_REF%
-        if %ERRORLEVEL% neq 0 (
-          echo Feature branch is not up to date with develop branch.
-          exit /b 1
-        )
-      shell: cmd
+        git merge-base --is-ancestor origin/develop $GITHUB_HEAD_REF
+        if [ $? -ne 0 ]; then
+          echo "Feature branch is not up to date with develop branch."
+          exit 1
+        fi
+      shell: bash
